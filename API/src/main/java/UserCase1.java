@@ -1,6 +1,9 @@
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -14,14 +17,16 @@ import org.apache.http.client.fluent.Request;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class UserCase1 {
-	public static String output, output2, resultsString;
+	public static String output, output2, resultsString, apiKey;
 	public static ArrayList<Long> docIDs = new ArrayList<Long>();
 	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+		apiKey = setProperties();
+		
 		try {
 			output = (Request.Get("https://pangolin.researchspace.com:8085/api/v1/documents?orderBy=lastModified%20desc&advancedQuery=%7B%22terms%22%3A%20%5B%20%7B%22query%22%3A%20%22TestForm%22%2C%20%22queryType%22%3A%20%22form%22%7D%5D%7D")
-					.addHeader("apiKey","064sj9DP18yPGDGmdk23AfXxF2Gf5ARC")
+					.addHeader("apiKey",apiKey)
 					.connectTimeout(10000)
 					.socketTimeout(10000)
 					.execute().returnContent().asString());
@@ -82,6 +87,33 @@ public class UserCase1 {
 		}
 	}
 	
+	public static String setProperties() {
+
+	Properties prop = new Properties();
+	InputStream input = null;
+
+	try {
+		input = new FileInputStream("config.properties");
+		// load a properties file
+		prop.load(input);
+		// get the property value and print it out
+		System.out.println(prop.getProperty("apiKey"));
+		apiKey = prop.getProperty("apiKey");
+	} catch (IOException ex) {
+		ex.printStackTrace();
+	} finally {
+		if (input != null) {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			}
+		}
+	return apiKey;
+	}
 }
+	
+
 
 
