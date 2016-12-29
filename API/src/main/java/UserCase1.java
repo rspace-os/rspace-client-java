@@ -118,6 +118,7 @@ public class UserCase1 {
 	return apiKey;
 	}
 	
+	//This method makes the HTTP query and returns the results as a JSON string
 	public static String makeQuery() {
 		
 		String output = "";

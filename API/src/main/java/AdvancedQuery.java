@@ -19,6 +19,11 @@ public class AdvancedQuery {
 		this.query2 = query2;
 		this.query2Type = query2Type;
 	}
+	
+	public AdvancedQuery (String query1, String query1Type) {
+		this.query1 = query1;
+		this.query1Type = query1Type;
+	}
 
 	public String advancedQueryJSON() {
 		//Formats parameters into JSON as required for running query
