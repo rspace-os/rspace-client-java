@@ -1,3 +1,4 @@
+//constructor for a query object comprised of the query term and the query type
 
 public class Query {
 	
@@ -16,5 +17,4 @@ public class Query {
 	public String getQueryType() {
 		return queryType;
 	}
-
 }

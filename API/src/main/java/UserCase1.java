@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -15,38 +16,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class UserCase1 {
 	public static String output, output2, resultsString;
-	public static String apiKey = setProperties();
 	public static ArrayList<Long> docIDs = new ArrayList<Long>();
 	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
-/*		try {
-			output = (Request.Get("https://pangolin.researchspace.com:8085/api/v1/documents?orderBy=lastModified%20desc&advancedQuery=%7B%22terms%22%3A%20%5B%20%7B%22query%22%3A%20%22TestForm%22%2C%20%22queryType%22%3A%20%22form%22%7D%5D%7D")
-					.addHeader("apiKey",apiKey)
-					.connectTimeout(10000)
-					.socketTimeout(10000)
-					.execute().returnContent().asString());
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} */
-		
 		String output1 = makeQuery();
+		System.out.println(makeQuery());
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode results = mapper.readTree(output1);
 		for(JsonNode document : results.path("documents")) {
 			String documentID = document.path("id").asText();
 			docIDs.add(Long.parseLong(documentID));
-		//	System.out.println(documentID);
+			System.out.println(documentID);
 		}
 		
 		for(long docID: docIDs){
@@ -92,18 +80,20 @@ public class UserCase1 {
 		//UriBuilder.contruct_uri_parameters_apache();
 	}
 	
-	public static String setProperties() {
+	//Method to set property from input file
+	public static String setProperties(String property) {
 
 	Properties prop = new Properties();
 	InputStream input = null;
+	String propertyValue = "";
 
 	try {
 		input = new FileInputStream("config.properties");
 		// load a properties file
 		prop.load(input);
 		// get the property value and print it out
-		System.out.println(prop.getProperty("apiKey"));
-		apiKey = prop.getProperty("apiKey");
+		System.out.println(prop.getProperty(property));
+		propertyValue = prop.getProperty(property);
 	} catch (IOException ex) {
 		ex.printStackTrace();
 	} finally {
@@ -115,17 +105,18 @@ public class UserCase1 {
 			}
 			}
 		}
-	return apiKey;
+	System.out.println(propertyValue);
+	return propertyValue;
 	}
 	
 	//This method makes the HTTP query and returns the results as a JSON string
-	public static String makeQuery() {
+	public static String makeQuery() throws URISyntaxException {
 		
 		String output = "";
 		
 		try {
-			output = (Request.Get("https://pangolin.researchspace.com:8085/api/v1/documents?orderBy=lastModified%20desc&advancedQuery=%7B%22terms%22%3A%20%5B%20%7B%22query%22%3A%20%22TestForm%22%2C%20%22queryType%22%3A%20%22form%22%7D%5D%7D")
-					.addHeader("apiKey",UserCase1.apiKey)
+			output = (Request.Get(uriString())
+					.addHeader("apiKey", setProperties("apiKey"))
 					.connectTimeout(10000)
 					.socketTimeout(10000)
 					.execute().returnContent().asString());
@@ -137,6 +128,25 @@ public class UserCase1 {
 			e.printStackTrace();
 		}
 		return output;
+	}
+	
+	public static String uriString() throws URISyntaxException {
+		
+		String uriString = "";
+		
+		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
+	    
+	    URIBuilder builder = new URIBuilder()
+	    		.setScheme("https")
+	            .setHost("pangolin.researchspace.com:8085/api/v1/documents")
+	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
+	    
+	    URI uri = builder.build();
+	    uriString = uri.toString();
+	    
+	    System.out.println(uriString);
+	    return uriString;
+	    
 	}
 }
 	

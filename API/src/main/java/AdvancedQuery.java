@@ -3,34 +3,51 @@
 
 public class AdvancedQuery {
 	
-	//set the operand of the advanced search (can be "and" or "or")
-	public String operand;
+	//set the operand of the advanced search (can be "and" or "or", default is "and")
+	public String operand = "and";
 	//set the query terms you wish to search and the query types
-	public String query1;
-	//Query types may be "global", "fullText", "tag", "name", "created", "lastModified", "form", "attachment", "owner"
-	public String query1Type;
-	public String query2;
-	public String query2Type;
+	public Query queries[];
+	public Query query;
 	
-	public AdvancedQuery (String operand, String query1, String query1Type, String query2, String query2Type) {
+	//constructor for multiple Advanced Queries
+	public AdvancedQuery (String operand, Query... queries){
 		this.operand = operand;
-		this.query1 = query1;
-		this.query1Type = query1Type;
-		this.query2 = query2;
-		this.query2Type = query2Type;
+		this.queries = queries;
 	}
 	
-	public AdvancedQuery (String query1, String query1Type) {
-		this.query1 = query1;
-		this.query1Type = query1Type;
+	//constructor for a single Advanced Query
+	public AdvancedQuery (Query... queries){
+		this.queries = queries;
 	}
-
-	public String advancedQueryJSON() {
-		//Formats parameters into JSON as required for running query
-		String terms = "\"terms\": [ {\"query\": " + query1 + ", \"queryType\": " + query1Type + "},{\"query\": " + query2 + ", \"queryType\": " + query2Type + "} ]";
-		String queryJSON = "{ \"operand\": " + operand + "," + terms + "}";
+	
+	public String advancedQuery2JSON() {
+		String queryJSON = "";
+		String queryTerms[] = new String[queries.length];
 		
+		//format individual queries into JSON
+		for(int i=0; i<queries.length; i++){
+			queryTerms[i] = "{\"query\": \"" + queries[i].getQuery() + "\", \"queryType\": \"" + queries[i].getQueryType() + "\" }";
+		}
+		
+		//add commas between multiple queries
+		for(int i=0; i<queryTerms.length-1; i++){
+			queryTerms[i] = queryTerms[i] + ", ";
+			queryJSON = queryJSON + queryTerms[i];
+		}
+		queryJSON = queryJSON + queryTerms[queryTerms.length-1];
+		
+		//finally add square brackets
+		queryJSON = "\"terms\": [ " + queryJSON + " ]";
+		
+		//Add operand if it is valid
+		if(queryTerms.length > 1 && (operand.equals("and")||operand.equals("or"))){
+			queryJSON = "{ \"operand\": " + operand + ", " + queryJSON + " }";
+		}
+		else {
+			queryJSON = "{ " + queryJSON + " }";
+		}
+		
+		System.out.println(queryJSON);
 		return queryJSON;
 	}
-
 }

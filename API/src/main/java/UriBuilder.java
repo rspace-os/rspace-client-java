@@ -8,16 +8,15 @@ import org.apache.http.client.utils.URIBuilder;
 
 public class UriBuilder {
 	
-	public static String uriString() throws URISyntaxException {
+	public String uriString() throws URISyntaxException {
 		
 		String uriString = "";
 		
-		AdvancedQuery advQuery = new AdvancedQuery("and", "protein", "term", "pcr", "term");
+		AdvancedQuery advQuery = new AdvancedQuery("and", new Query ("protein", "term") , new Query ("pcr", "term"));
 	    
 	    URIBuilder builder = new URIBuilder()
-	        //    .setScheme("http")
 	            .setHost("https://pangolin.researchspace.com:8085/api/v1/documents")
-	            .setParameter("advancedQuery", advQuery.advancedQueryJSON());
+	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	    
 	    URI uri = builder.build();
 	    uriString = uri.toString();
