@@ -46,8 +46,7 @@ public class AdvancedQuery {
 		else {
 			queryJSON = "{ " + queryJSON + " }";
 		}
-		
-		System.out.println(queryJSON);
+//		System.out.println(queryJSON);
 		return queryJSON;
 	}
 }
