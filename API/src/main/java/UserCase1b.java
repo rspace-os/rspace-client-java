@@ -1,4 +1,8 @@
+/*  
+ */
+
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ public class UserCase1b {
 	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
 	public static String query = "TestForm";
 	public static String queryType = "form";
+	public static String resultsString;
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
@@ -35,6 +40,7 @@ public class UserCase1b {
 			//iterate over all documents extracting data from desired field
 			ObjectMapper mapper2 = new ObjectMapper();
 			JsonNode results2 = mapper2.readTree(output2);
+			System.out.println(output2);
 			JsonNode fieldArray = results2.path("fields");
 			String fieldValue = fieldArray.path(1).path("content").asText();
 			fieldValues.add(Float.parseFloat(fieldValue));
@@ -46,6 +52,16 @@ public class UserCase1b {
 			    Thread.currentThread().interrupt();
 			}
 			
+		}
+		
+		//output results into CSV file
+		resultsString = "";
+		for(float fieldValue: fieldValues){
+			resultsString = resultsString + Float.toString(fieldValue) + "," + "\n";
+		}
+		
+		try(PrintWriter out = new PrintWriter("UserCase1.csv")){
+		    out.println(resultsString);
 		}
 	}
 	
