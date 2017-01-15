@@ -1,16 +1,15 @@
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Optional;
-
-
+import org.apache.commons.io.FileUtils;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
@@ -23,7 +22,7 @@ public class UserCase1c {
 	
 	public static void main(String[] args) throws URISyntaxException, JsonProcessingException, IOException {
 		
-		
+		ArrayList<String> fileURLs = new ArrayList<String>();
 		String data = Query.makeQuery(uriString(docID));
 		//System.out.println(data);
 		
@@ -36,8 +35,31 @@ public class UserCase1c {
 		
 		for(JsonNode file: files){
 			String filelink = file.path("_links").path(0).path("link").asText();
+			URL fileSource = new URL(filelink);
+			System.out.println(fileSource);
+			fileURLs.add(filelink);
 			System.out.println(filelink);
 		}
+		
+		int i = 0;
+		for(String filelink: fileURLs){
+			String fileSource = filelink + "/file";
+			InputStream content = (Request.Get(fileSource)
+					.addHeader("apiKey", Query.setProperties("apiKey"))
+					.connectTimeout(10000)
+					.socketTimeout(10000)
+					.execute().returnContent().asStream());
+			File file = new File("output" + i);
+			FileUtils.copyInputStreamToFile(content, file);
+			i++;
+			
+			try {
+			    Thread.sleep(100);
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+			//System.out.println(output);
+		} 
 	}
 	
 	public static String uriString(long docID) throws URISyntaxException {
