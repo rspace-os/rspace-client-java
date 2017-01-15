@@ -74,4 +74,5 @@ public class Query {
 		}
 		return output;
 	}
+
 }

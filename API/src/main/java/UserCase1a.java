@@ -1,3 +1,10 @@
+/* This program returns the specified number of results for a query 
+ * and pages through them using the _links property within documents/.
+ * The _links property contains pre-created links to the next, previous,
+ * first or last page of results, as appropriate. 
+ * This helps the client since it doesn’t have to figure out pagination. 
+ */
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,20 +45,18 @@ public class UserCase1a {
 		Optional<String> prevLink = getLink(results, "last");
 		System.err.println(prevLink.orElse("No last link"));
 		
-		
+		//Select document ID of all documents returned using "next" link
 		while (nextLink.isPresent()){
 		nextLinkNotNull = nextLink.get();
 		data = Query.makeQuery(nextLinkNotNull);
 		docIDs.addAll(getDocID(results));
 		
 		mapper = new ObjectMapper();
-		// data here is returned from /documents
 		results = mapper.readTree(data);
-
 		nextLink = getLink(results, "next");
-		//System.err.println(nextLink.orElse("No next link"));
+		System.err.println(nextLink.orElse("No next link"));
 		prevLink = getLink(results, "last");
-		//System.err.println(prevLink.orElse("No last link"));
+		System.err.println(prevLink.orElse("No last link"));
 		}
 		
 		docIDs.addAll(getDocID(results));
@@ -83,16 +88,13 @@ public class UserCase1a {
 			return theseDocIDs;
 		}
 	
-
-	
-	//This method builds the URI String from your Query
-	public static String uriString() throws URISyntaxException {
+		//This method builds the URI String from your Query
+		public static String uriString() throws URISyntaxException {
 		
-		String uriString = "";
-		
-		AdvancedQuery advQuery = new AdvancedQuery(new Query (query, queryType));
+			String uriString = "";
+			AdvancedQuery advQuery = new AdvancedQuery(new Query (query, queryType));
 	    
-	    URIBuilder builder = new URIBuilder()
+			URIBuilder builder = new URIBuilder()
 	    		.setScheme("https")
 	            .setHost(Query.setProperties("hostURL"))
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON())
@@ -100,12 +102,11 @@ public class UserCase1a {
 	    		.setParameter("pageSize", "1")
 	    		.setParameter("orderBy", "created asc");
 	    
-	    URI uri = builder.build();
-	    uriString = uri.toString();
+			URI uri = builder.build();
+			uriString = uri.toString();
 	    
-	    return uriString;
-	    
-	} 
+			return uriString;
+		} 
 }
 	
 
