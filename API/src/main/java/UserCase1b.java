@@ -67,9 +67,7 @@ public class UserCase1b {
 	public static String uriString() throws URISyntaxException {
 		
 		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
-	    URIBuilder builder = new URIBuilder()
-	    		.setScheme("https")
-	            .setHost(Query.setProperties("hostURL"))
+	    URIBuilder builder = new URIBuilder(Library.getAPIDocumentsUrl())
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	    
 	    URI uri = builder.build();

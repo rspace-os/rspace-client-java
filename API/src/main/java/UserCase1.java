@@ -33,7 +33,7 @@ public class UserCase1 {
 		}
 		
 		for(long docID: docIDs){
-			String requestURL = "https://" + Query.setProperties("hostURL") + "/" + docID;
+			String requestURL = Library.getAPIDocumentUrl(docID);
 			output2 = Query.makeQuery(requestURL);
 			
 			ObjectMapper mapper2 = new ObjectMapper();
@@ -67,9 +67,7 @@ public class UserCase1 {
 	public static String uriString() throws URISyntaxException {
 		
 		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
-	    URIBuilder builder = new URIBuilder()
-	    		.setScheme("https")
-	            .setHost(Query.setProperties("hostURL"))
+	    URIBuilder builder = new URIBuilder(Library.getAPIDocumentsUrl())
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	    
 	    URI uri = builder.build();

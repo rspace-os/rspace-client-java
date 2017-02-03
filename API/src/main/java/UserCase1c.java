@@ -1,14 +1,12 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +21,7 @@ public class UserCase1c {
 	public static void main(String[] args) throws URISyntaxException, JsonProcessingException, IOException {
 		
 		ArrayList<String> fileURLs = new ArrayList<String>();
-		String data = Query.makeQuery(uriString(docID));
+		String data = Query.makeQuery(Library.getAPIDocumentUrl(docID));
 		//System.out.println(data);
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -45,7 +43,7 @@ public class UserCase1c {
 		for(String filelink: fileURLs){
 			String fileSource = filelink + "/file";
 			InputStream content = (Request.Get(fileSource)
-					.addHeader("apiKey", Query.setProperties("apiKey"))
+					.addHeader("apiKey", Library.getConfigProperty("apiKey"))
 					.connectTimeout(10000)
 					.socketTimeout(10000)
 					.execute().returnContent().asStream());
@@ -61,16 +59,6 @@ public class UserCase1c {
 			//System.out.println(output);
 		} 
 	}
-	
-	public static String uriString(long docID) throws URISyntaxException {
-		
-		URIBuilder builder = new URIBuilder()
-    		.setScheme("https")
-            .setHost(Query.setProperties("hostURL"));
-    
-		URI uri = builder.build();
-		String uriString = uri.toString() + "/" + docID;
-    	return uriString;
-	} 
+
 }
 
