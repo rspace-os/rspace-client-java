@@ -12,22 +12,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
-
 import org.apache.http.client.utils.URIBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class UserCase1a {
+
 	public static ArrayList<String> requestURLs = new ArrayList<String>();
 	public static ArrayList<Integer> docIDs = new ArrayList<Integer>();
-	public static String query = "TestForm";
-	public static String queryType = "form";
 	public static String nextLinkNotNull;
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
@@ -91,9 +88,7 @@ public class UserCase1a {
 		//This method builds the URI String from your Query
 		public static String uriString() throws URISyntaxException {
 		
-			String uriString = "";
-			AdvancedQuery advQuery = new AdvancedQuery(new Query (query, queryType));
-	    
+			AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
 			URIBuilder builder = new URIBuilder()
 	    		.setScheme("https")
 	            .setHost(Query.setProperties("hostURL"))
@@ -103,12 +98,7 @@ public class UserCase1a {
 	    		.setParameter("orderBy", "created asc");
 	    
 			URI uri = builder.build();
-			uriString = uri.toString();
-	    
-			return uriString;
+			return uri.toString();
 		} 
 }
-	
-
-
 

@@ -5,17 +5,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class UserCase1c {
 	
 	public static long docID = 24407;
@@ -64,16 +64,13 @@ public class UserCase1c {
 	
 	public static String uriString(long docID) throws URISyntaxException {
 		
-		String uriString = "";
-    
 		URIBuilder builder = new URIBuilder()
     		.setScheme("https")
             .setHost(Query.setProperties("hostURL"));
     
 		URI uri = builder.build();
-		uriString = uri.toString() + "/" + docID;
-    
-		return uriString;
+		String uriString = uri.toString() + "/" + docID;
+    	return uriString;
 	} 
-
 }
+

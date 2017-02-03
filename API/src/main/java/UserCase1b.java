@@ -9,19 +9,17 @@ import java.util.ArrayList;
 
 import org.apache.http.client.utils.URIBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class UserCase1b {
+
 	public static ArrayList<String> requestURLs = new ArrayList<String>();
 	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
-	public static String query = "TestForm";
-	public static String queryType = "form";
 	public static String resultsString;
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
@@ -68,24 +66,15 @@ public class UserCase1b {
 	//This method builds the URI String from your Query
 	public static String uriString() throws URISyntaxException {
 		
-		String uriString = "";
-		
-		AdvancedQuery advQuery = new AdvancedQuery(new Query (query, queryType));
-	    
+		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
 	    URIBuilder builder = new URIBuilder()
 	    		.setScheme("https")
 	            .setHost(Query.setProperties("hostURL"))
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	    
 	    URI uri = builder.build();
-	    uriString = uri.toString();
-	    
-//	    System.out.println(uriString);
-	    return uriString;
+	    return uri.toString();
 	    
 	}
 }
-	
-
-
 

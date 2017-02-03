@@ -58,7 +58,6 @@ public class Query {
 	public static String makeQuery(String uriString) throws URISyntaxException {
 		
 		String output = "";
-		
 		try {
 			output = (Request.Get(uriString)
 					.addHeader("apiKey", setProperties("apiKey"))

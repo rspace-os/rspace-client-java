@@ -1,33 +1,28 @@
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Properties;
 
+import org.apache.http.client.utils.URIBuilder;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.utils.URIBuilder;
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class UserCase1 {
+
 	public static String output, output2, resultsString;
 	public static ArrayList<Long> docIDs = new ArrayList<Long>();
 	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
 	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
-		String output1 = makeQuery();
-		System.out.println(makeQuery());
+		String output1 = Query.makeQuery(uriString());
+		System.out.println(output1);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode results = mapper.readTree(output1);
@@ -38,20 +33,8 @@ public class UserCase1 {
 		}
 		
 		for(long docID: docIDs){
-			try {
-				String requestURL = "https://" + setProperties("hostURL") + "/" + docID;
-				output2 = (Request.Get(requestURL)
-						.addHeader("apiKey",setProperties("apiKey"))
-						.connectTimeout(10000)
-						.socketTimeout(10000)
-						.execute().returnContent().asString());
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String requestURL = "https://" + Query.setProperties("hostURL") + "/" + docID;
+			output2 = Query.makeQuery(requestURL);
 			
 			ObjectMapper mapper2 = new ObjectMapper();
 			JsonNode results2 = mapper2.readTree(output2);
@@ -80,77 +63,18 @@ public class UserCase1 {
 		//UriBuilder.contruct_uri_parameters_apache();
 	}
 	
-	//Method to set property (API key or host URL) from input file
-	public static String setProperties(String property) {
-
-	Properties prop = new Properties();
-	InputStream input = null;
-	String propertyValue = "";
-
-	try {
-		input = new FileInputStream("config.properties");
-		// load a properties file
-		prop.load(input);
-		// get the property value and print it out
-		System.out.println(prop.getProperty(property));
-		propertyValue = prop.getProperty(property);
-	} catch (IOException ex) {
-		ex.printStackTrace();
-	} finally {
-		if (input != null) {
-			try {
-				input.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			}
-		}
-	System.out.println(propertyValue);
-	return propertyValue;
-	}
-	
-	//This method makes the HTTP query and returns the results as a JSON string
-	public static String makeQuery() throws URISyntaxException {
-		
-		String output = "";
-		
-		try {
-			output = (Request.Get(uriString())
-					.addHeader("apiKey", setProperties("apiKey"))
-					.connectTimeout(10000)
-					.socketTimeout(10000)
-					.execute().returnContent().asString());
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return output;
-	}
-	
 	//This method builds the URI String from your Query
 	public static String uriString() throws URISyntaxException {
 		
-		String uriString = "";
-		
 		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
-	    
 	    URIBuilder builder = new URIBuilder()
 	    		.setScheme("https")
-	            .setHost(setProperties("hostURL"))
+	            .setHost(Query.setProperties("hostURL"))
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	    
 	    URI uri = builder.build();
-	    uriString = uri.toString();
-	    
-	    System.out.println(uriString);
-	    return uriString;
+	    return uri.toString();
 	    
 	}
 }
-	
-
-
 
