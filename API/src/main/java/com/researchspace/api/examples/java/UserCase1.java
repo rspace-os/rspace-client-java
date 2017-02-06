@@ -14,14 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1 {
 
-	public static String output, output2, resultsString;
-	public static ArrayList<Long> docIDs = new ArrayList<Long>();
-	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
-	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
 		String output1 = AdvancedQuery.makeDocsQuery();
 		System.out.println(output1);
+		
+		ArrayList<Long> docIDs = new ArrayList<Long>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode results = mapper.readTree(output1);
@@ -31,9 +29,10 @@ public class UserCase1 {
 			System.out.println(documentID);
 		}
 		
+		ArrayList<Float> fieldValues = new ArrayList<Float>();
 		for(long docID: docIDs){
 			String requestURL = Library.getAPIDocumentUrl(docID);
-			output2 = Library.makeQuery(requestURL);
+			String output2 = Library.makeQuery(requestURL);
 			
 			ObjectMapper mapper2 = new ObjectMapper();
 			JsonNode results2 = mapper2.readTree(output2);
@@ -50,7 +49,7 @@ public class UserCase1 {
 			
 		}
 		
-		resultsString = "\n";
+		String resultsString = "\n";
 		for(float fieldValue: fieldValues){
 			resultsString = resultsString + Float.toString(fieldValue) + "\n";
 		}

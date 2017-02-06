@@ -18,12 +18,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1c {
 	
-	public static long docID = 24407;
+	private static final long TEST_DOC_ID = 24407;
 	
 	public static void main(String[] args) throws URISyntaxException, JsonProcessingException, IOException {
 		
 		ArrayList<String> fileURLs = new ArrayList<String>();
-		String data = Library.makeQuery(Library.getAPIDocumentUrl(docID));
+		String data = Library.makeQuery(Library.getAPIDocumentUrl(TEST_DOC_ID));
 		//System.out.println(data);
 		
 		ObjectMapper mapper = new ObjectMapper();

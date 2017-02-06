@@ -17,16 +17,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1b {
 
-	public static ArrayList<String> requestURLs = new ArrayList<String>();
-	public static ArrayList<Float> fieldValues = new ArrayList<Float>();
-	public static String resultsString;
-	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
 		//Create a query for all documents made from a specified form template
 		String output1 = AdvancedQuery.makeDocsQuery();
 		
 		//Process results
+		ArrayList<Float> fieldValues = new ArrayList<Float>();
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode results = mapper.readTree(output1);
 		for(JsonNode document : results.path("documents")) {
@@ -52,7 +49,7 @@ public class UserCase1b {
 		}
 		
 		//output results into CSV file
-		resultsString = "";
+		String resultsString = "";
 		for(float fieldValue: fieldValues){
 			resultsString = resultsString + Float.toString(fieldValue) + "," + "\n";
 		}

@@ -22,10 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1a {
 
-	public static ArrayList<String> requestURLs = new ArrayList<String>();
-	public static ArrayList<Integer> docIDs = new ArrayList<Integer>();
-	public static String nextLinkNotNull;
-	
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
 		//Create an advanced query for all documents made from a specified form template
@@ -42,21 +38,21 @@ public class UserCase1a {
 		System.err.println(prevLink.orElse("No last link"));
 		
 		//Select document ID of all documents returned using "next" link
+		ArrayList<Integer> docIDs = new ArrayList<Integer>();
 		while (nextLink.isPresent()){
-		nextLinkNotNull = nextLink.get();
-		data = Library.makeQuery(nextLinkNotNull);
-		docIDs.addAll(getDocID(results));
-		
-		mapper = new ObjectMapper();
-		results = mapper.readTree(data);
-		nextLink = getLink(results, "next");
-		System.err.println(nextLink.orElse("No next link"));
-		prevLink = getLink(results, "last");
-		System.err.println(prevLink.orElse("No last link"));
+			String nextLinkNotNull = nextLink.get();
+			data = Library.makeQuery(nextLinkNotNull);
+			docIDs.addAll(getDocID(results));
+			
+			mapper = new ObjectMapper();
+			results = mapper.readTree(data);
+			nextLink = getLink(results, "next");
+			System.err.println(nextLink.orElse("No next link"));
+			prevLink = getLink(results, "last");
+			System.err.println(prevLink.orElse("No last link"));
 		}
 		
 		docIDs.addAll(getDocID(results));
-		
 		for(int docID: docIDs){
 			System.out.println(docID);
 		}
