@@ -2,11 +2,8 @@ package com.researchspace.api.examples.java;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-
-import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -27,7 +24,7 @@ public class UserCase1b {
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
 		//Create a query for all documents made from a specified form template
-		String output1 = Query.makeQuery(uriString());
+		String output1 = AdvancedQuery.makeDocsQuery();
 		
 		//Process results
 		ObjectMapper mapper = new ObjectMapper();
@@ -35,7 +32,7 @@ public class UserCase1b {
 		for(JsonNode document : results.path("documents")) {
 			//extract links for documents made from desired form
 			String requestURL = document.path("_links").path(0).path("link").asText();
-			String output2 = Query.makeQuery(requestURL);
+			String output2 = Library.makeQuery(requestURL);
 			
 			//iterate over all documents extracting data from desired field
 			ObjectMapper mapper2 = new ObjectMapper();
@@ -64,17 +61,6 @@ public class UserCase1b {
 		    out.println(resultsString);
 		}
 	}
-	
-	//This method builds the URI String from your Query
-	public static String uriString() throws URISyntaxException {
-		
-		AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
-	    URIBuilder builder = new URIBuilder(Library.getAPIDocumentsUrl())
-	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
-	    
-	    URI uri = builder.build();
-	    return uri.toString();
-	    
-	}
+
 }
 

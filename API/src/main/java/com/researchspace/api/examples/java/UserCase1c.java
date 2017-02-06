@@ -23,7 +23,7 @@ public class UserCase1c {
 	public static void main(String[] args) throws URISyntaxException, JsonProcessingException, IOException {
 		
 		ArrayList<String> fileURLs = new ArrayList<String>();
-		String data = Query.makeQuery(Library.getAPIDocumentUrl(docID));
+		String data = Library.makeQuery(Library.getAPIDocumentUrl(docID));
 		//System.out.println(data);
 		
 		ObjectMapper mapper = new ObjectMapper();

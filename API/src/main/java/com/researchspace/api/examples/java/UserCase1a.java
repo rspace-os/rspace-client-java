@@ -1,13 +1,10 @@
 package com.researchspace.api.examples.java;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
-
-import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -34,7 +31,7 @@ public class UserCase1a {
 		//Create an advanced query for all documents made from a specified form template
 		//Return the results by retrieving the first page of results and then linking to the
 		//next page... until the last page is reached
-		String data = Query.makeQuery(uriString());
+		String data = AdvancedQuery.makeOneDocPerPageQuery();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		// data here is returned from /documents
@@ -47,7 +44,7 @@ public class UserCase1a {
 		//Select document ID of all documents returned using "next" link
 		while (nextLink.isPresent()){
 		nextLinkNotNull = nextLink.get();
-		data = Query.makeQuery(nextLinkNotNull);
+		data = Library.makeQuery(nextLinkNotNull);
 		docIDs.addAll(getDocID(results));
 		
 		mapper = new ObjectMapper();
@@ -65,40 +62,27 @@ public class UserCase1a {
 		}
 	}
 	
-		static Optional<String> getLink (JsonNode results, String relType){
-		    String nextLink = null;
-		    Iterator<JsonNode> it = results.get("_links").elements();
-		    while(it.hasNext()) {
-			JsonNode node = it.next();
-			if (relType.equals(node.get("rel").textValue())){
-			    nextLink=  node.get("link").asText();
-			    break;
-			};
-		    } 
-		    return Optional.ofNullable(nextLink);
-		}
-		
-		static ArrayList<Integer> getDocID (JsonNode results){
-			ArrayList<Integer> theseDocIDs = new ArrayList<Integer>();
-			for(JsonNode document : results.path("documents")){
-				int docID = document.path("id").asInt();
-				theseDocIDs.add(docID);
-			}
-			return theseDocIDs;
-		}
+	static Optional<String> getLink (JsonNode results, String relType){
+	    String nextLink = null;
+	    Iterator<JsonNode> it = results.get("_links").elements();
+	    while(it.hasNext()) {
+		JsonNode node = it.next();
+		if (relType.equals(node.get("rel").textValue())){
+		    nextLink=  node.get("link").asText();
+		    break;
+		};
+	    } 
+	    return Optional.ofNullable(nextLink);
+	}
 	
-		//This method builds the URI String from your Query
-		public static String uriString() throws URISyntaxException {
-		
-			AdvancedQuery advQuery = new AdvancedQuery(new Query ("TestForm", "form"));
-			URIBuilder builder = new URIBuilder(Library.getAPIDocumentsUrl())
-	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON())
-	    		.setParameter("pageNumber", "0")
-	    		.setParameter("pageSize", "1")
-	    		.setParameter("orderBy", "created asc");
-	    
-			URI uri = builder.build();
-			return uri.toString();
-		} 
+	static ArrayList<Integer> getDocID (JsonNode results){
+		ArrayList<Integer> theseDocIDs = new ArrayList<Integer>();
+		for(JsonNode document : results.path("documents")){
+			int docID = document.path("id").asInt();
+			theseDocIDs.add(docID);
+		}
+		return theseDocIDs;
+	}
+
 }
 

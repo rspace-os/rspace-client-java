@@ -1,8 +1,15 @@
 package com.researchspace.api.examples.java;
 
-//This class builds correctly formatted advanced queries, given the required
-//operand, queries and query types
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.apache.http.client.utils.URIBuilder;
+
+/**
+ * This class builds correctly formatted advanced queries, given the required
+ * operand, queries and query types
+ *
+ */
 public class AdvancedQuery {
 	
 	//set the operand of the advanced search (can be "and" or "or", default is "and")
@@ -51,4 +58,38 @@ public class AdvancedQuery {
 //		System.out.println(queryJSON);
 		return queryJSON;
 	}
+	
+	
+	public static String makeDocsQuery() throws URISyntaxException {
+		return Library.makeQuery(advancedQueryUriString());
+	}
+
+	private static String advancedQueryUriString() throws URISyntaxException {
+		URIBuilder builder = getAdvancedQueryURIBuilder();
+	    URI uri = builder.build();
+	    return uri.toString();
+	    
+	}
+
+	private static URIBuilder getAdvancedQueryURIBuilder() throws URISyntaxException {
+		AdvancedQuery advQuery = new AdvancedQuery(new Query ("Basic Document", "form"));
+	    return new URIBuilder(Library.getAPIDocumentsUrl())
+	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
+	}
+
+	public static String makeOneDocPerPageQuery() throws URISyntaxException {
+		return Library.makeQuery(advancedQueryOneDocPerPageUriString());
+	}
+	
+	private static String advancedQueryOneDocPerPageUriString() throws URISyntaxException {
+	
+		URIBuilder builder = getAdvancedQueryURIBuilder()
+				.setParameter("pageNumber", "0")
+	    		.setParameter("pageSize", "1")
+	    		.setParameter("orderBy", "created asc");
+    
+		URI uri = builder.build();
+		return uri.toString();
+	} 
+	
 }
