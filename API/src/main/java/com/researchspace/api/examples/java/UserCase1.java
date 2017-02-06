@@ -1,3 +1,5 @@
+package com.researchspace.api.examples.java;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;

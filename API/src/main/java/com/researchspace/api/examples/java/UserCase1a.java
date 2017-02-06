@@ -1,9 +1,4 @@
-/* This program returns the specified number of results for a query 
- * and pages through them using the _links property within documents/.
- * The _links property contains pre-created links to the next, previous,
- * first or last page of results, as appropriate. 
- * This helps the client since it doesn’t have to figure out pagination. 
- */
+package com.researchspace.api.examples.java;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,6 +14,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
+
+/* This program returns the specified number of results for a query 
+ * and pages through them using the _links property within documents/.
+ * The _links property contains pre-created links to the next, previous,
+ * first or last page of results, as appropriate. 
+ * This helps the client since it doesn’t have to figure out pagination. 
+ */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1a {

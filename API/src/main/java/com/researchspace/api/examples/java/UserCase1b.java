@@ -1,5 +1,4 @@
-/*  
- */
+package com.researchspace.api.examples.java;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +13,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
+
+/*  
+ */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1b {

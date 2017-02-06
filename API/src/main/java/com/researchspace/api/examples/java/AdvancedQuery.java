@@ -1,3 +1,5 @@
+package com.researchspace.api.examples.java;
+
 //This class builds correctly formatted advanced queries, given the required
 //operand, queries and query types
 

@@ -1,3 +1,5 @@
+package com.researchspace.api.examples.java;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,3 +1,5 @@
+package com.researchspace.api.examples.java;
+
 import org.junit.Test;
 
 /*
