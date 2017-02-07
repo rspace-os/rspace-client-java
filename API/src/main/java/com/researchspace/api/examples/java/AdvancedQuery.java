@@ -1,5 +1,6 @@
 package com.researchspace.api.examples.java;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -60,7 +61,7 @@ public class AdvancedQuery {
 	}
 	
 	
-	public static String makeDocsQuery() throws URISyntaxException {
+	public static String makeDocsQuery() throws URISyntaxException, IOException {
 		return Library.makeQuery(advancedQueryUriString());
 	}
 
@@ -77,7 +78,7 @@ public class AdvancedQuery {
 	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
 	}
 
-	public static String makeOneDocPerPageQuery() throws URISyntaxException {
+	public static String makeOneDocPerPageQuery() throws URISyntaxException, IOException {
 		return Library.makeQuery(advancedQueryOneDocPerPageUriString());
 	}
 	

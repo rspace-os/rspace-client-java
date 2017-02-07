@@ -12,13 +12,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-/* This program returns the specified number of results for a query 
- * and pages through them using the _links property within documents/.
+/** This use case navigates through paginated document results by using 
+ * the _links property within documents.
+ * 
  * The _links property contains pre-created links to the next, previous,
- * first or last page of results, as appropriate. 
- * This helps the client since it doesn’t have to figure out pagination. 
+ * first or last page of results, as appropriate.
  */
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1a {
 

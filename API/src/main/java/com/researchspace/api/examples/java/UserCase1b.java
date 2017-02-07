@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
-/*  
+/** 
+ * Iterate through documents and put their content into CSV file.
  */
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1b {
 
@@ -27,6 +27,7 @@ public class UserCase1b {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode results = mapper.readTree(output1);
 		for(JsonNode document : results.path("documents")) {
+
 			//extract links for documents made from desired form
 			String requestURL = document.path("_links").path(0).path("link").asText();
 			String output2 = Library.makeQuery(requestURL);
@@ -54,7 +55,7 @@ public class UserCase1b {
 			resultsString = resultsString + Float.toString(fieldValue) + "," + "\n";
 		}
 		
-		try(PrintWriter out = new PrintWriter("UserCase1.csv")){
+		try(PrintWriter out = new PrintWriter("UseCase1b.csv")){
 		    out.println(resultsString);
 		}
 	}

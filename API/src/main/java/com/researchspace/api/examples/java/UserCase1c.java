@@ -15,6 +15,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
+/**
+ * This use case saves document's attachment. 
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCase1c {
 	

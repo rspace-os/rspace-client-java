@@ -3,7 +3,6 @@ package com.researchspace.api.examples.java;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.apache.http.client.fluent.Request;
@@ -51,20 +50,19 @@ public class Library {
 		return propertyValue;
 	}
 
+	public static String makeSingleDocumentQuery(long docID) throws IOException {
+		return makeQuery(Library.getAPIDocumentUrl(docID));
+	}
+	
 	//This method makes the HTTP query and returns the results as a JSON string
-	public static String makeQuery(String uriString) throws URISyntaxException {
+	public static String makeQuery(String uriString) throws IOException {
 		
-		String output = "";
-		try {
-			output = (Request.Get(uriString)
+		String output = (Request.Get(uriString)
 					.addHeader("apiKey", Library.getConfigProperty("apiKey"))
 					.connectTimeout(10000)
 					.socketTimeout(10000)
 					.execute().returnContent().asString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		return output;
 	}
-	
+
 }
