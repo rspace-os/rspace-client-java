@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
  * UseCase1 - print content of all documents belonging to the user into results file.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCase1 {
+public class UseCase1 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		

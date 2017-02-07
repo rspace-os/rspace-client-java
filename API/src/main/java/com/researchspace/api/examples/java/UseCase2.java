@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
  * first or last page of results, as appropriate.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCase1a {
+public class UseCase2 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		

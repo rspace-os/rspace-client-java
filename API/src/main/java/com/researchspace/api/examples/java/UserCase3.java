@@ -13,9 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
 
 /** 
  * Iterate through documents and put their content into CSV file.
+ * 
+ * TODO: should demonstrate retrieving CSV content from the server, which is supported by the API.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCase1b {
+public class UserCase3 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
