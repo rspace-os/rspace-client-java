@@ -8,11 +8,11 @@ import org.junit.Test;
  *
  * @author Sarah, @date 12/16/16 12:14 AM
  */
-public class LibraryTest {
+public class ApiConnectorTest {
 	
     @Test 
     public void testSomeLibraryMethod() {
-        Library classUnderTest = new Library();
+        ApiConnector classUnderTest = new ApiConnector();
         //assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
     }
 }

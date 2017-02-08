@@ -18,7 +18,9 @@ public class UseCase1 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
-		String allDocsOutput = AdvancedQuery.makeDocsQuery();
+		ApiConnector apiConnector = new ApiConnector();
+
+		String allDocsOutput = apiConnector.makeAllDocsApiRequest();
 		//System.out.println(allDocsOutput);
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -30,7 +32,7 @@ public class UseCase1 {
 			resultString += docName + ":\n";
 			
 			long docId = Long.parseLong(document.path("id").asText());
-			String singleDocOutput = Library.makeSingleDocumentQuery(docId);
+			String singleDocOutput = apiConnector.makeSingleDocumentApiRequest(docId);
 			ObjectMapper mapper2 = new ObjectMapper();
 			JsonNode singleDocNode = mapper2.readTree(singleDocOutput);
 			for (JsonNode fieldNode : singleDocNode.path("fields")) {

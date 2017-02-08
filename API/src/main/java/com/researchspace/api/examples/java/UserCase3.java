@@ -21,8 +21,10 @@ public class UserCase3 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
+		ApiConnector apiConnector = new ApiConnector();
+
 		//Create a query for all documents made from a specified form template
-		String output1 = AdvancedQuery.makeDocsQuery();
+		String output1 = apiConnector.makeAllDocsApiRequest();
 		
 		//Process results
 		ArrayList<Float> fieldValues = new ArrayList<Float>();
@@ -31,8 +33,8 @@ public class UserCase3 {
 		for(JsonNode document : results.path("documents")) {
 
 			//extract links for documents made from desired form
-			String requestURL = document.path("_links").path(0).path("link").asText();
-			String output2 = Library.makeQuery(requestURL);
+			String linkURL = document.path("_links").path(0).path("link").asText();
+			String output2 = apiConnector.makeApiRequest(linkURL).asString();
 			
 			//iterate over all documents extracting data from desired field
 			ObjectMapper mapper2 = new ObjectMapper();
@@ -53,7 +55,7 @@ public class UserCase3 {
 		
 		//output results into CSV file
 		String resultsString = "";
-		for(float fieldValue: fieldValues){
+		for (float fieldValue : fieldValues) {
 			resultsString = resultsString + Float.toString(fieldValue) + "," + "\n";
 		}
 		

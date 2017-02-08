@@ -1,6 +1,5 @@
 package com.researchspace.api.examples.java;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -29,8 +28,8 @@ public class AdvancedQuery {
 	public AdvancedQuery (Query... queries){
 		this.queries = queries;
 	}
-	
-	public String advancedQuery2JSON() {
+
+	private String advancedQuery2JSON() {
 		String queryJSON = "";
 		String queryTerms[] = new String[queries.length];
 		
@@ -59,32 +58,17 @@ public class AdvancedQuery {
 //		System.out.println(queryJSON);
 		return queryJSON;
 	}
-	
-	
-	public static String makeDocsQuery() throws URISyntaxException, IOException {
-		return Library.makeQuery(advancedQueryUriString());
-	}
 
-	private static String advancedQueryUriString() throws URISyntaxException {
-		URIBuilder builder = getAdvancedQueryURIBuilder();
+	
+	public static String advancedQueryUriString(String apiDocumentsUrl) throws URISyntaxException {
+		URIBuilder builder = getAdvancedQueryURIBuilder(apiDocumentsUrl);
 	    URI uri = builder.build();
 	    return uri.toString();
 	    
 	}
 
-	private static URIBuilder getAdvancedQueryURIBuilder() throws URISyntaxException {
-		AdvancedQuery advQuery = new AdvancedQuery(new Query ("Basic Document", "form"));
-	    return new URIBuilder(Library.getAPIDocumentsUrl())
-	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
-	}
-
-	public static String makeOneDocPerPageQuery() throws URISyntaxException, IOException {
-		return Library.makeQuery(advancedQueryOneDocPerPageUriString());
-	}
-	
-	private static String advancedQueryOneDocPerPageUriString() throws URISyntaxException {
-	
-		URIBuilder builder = getAdvancedQueryURIBuilder()
+	public static String advancedQueryOneDocPerPageUriString(String apiDocumentsUrl) throws URISyntaxException {
+		URIBuilder builder = getAdvancedQueryURIBuilder(apiDocumentsUrl)
 				.setParameter("pageNumber", "0")
 	    		.setParameter("pageSize", "1")
 	    		.setParameter("orderBy", "created asc");
@@ -92,5 +76,11 @@ public class AdvancedQuery {
 		URI uri = builder.build();
 		return uri.toString();
 	} 
+
+	private static URIBuilder getAdvancedQueryURIBuilder(String apiDocumentsUrl) throws URISyntaxException {
+		AdvancedQuery advQuery = new AdvancedQuery(new Query ("Basic Document", "form"));
+	    return new URIBuilder(apiDocumentsUrl)
+	            .setParameter("advancedQuery", advQuery.advancedQuery2JSON());
+	}
 	
 }

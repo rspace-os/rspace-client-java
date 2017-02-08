@@ -23,10 +23,12 @@ public class UseCase2 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
+		ApiConnector apiConnector = new ApiConnector();
+
 		//Create an advanced query for all documents made from a specified form template
 		//Return the results by retrieving the first page of results and then linking to the
 		//next page... until the last page is reached
-		String data = AdvancedQuery.makeOneDocPerPageQuery();
+		String data = apiConnector.makeOneDocPerPageApiRequest();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		// data here is returned from /documents
@@ -40,7 +42,7 @@ public class UseCase2 {
 		ArrayList<Integer> docIDs = new ArrayList<Integer>();
 		while (nextLink.isPresent()){
 			String nextLinkNotNull = nextLink.get();
-			data = Library.makeQuery(nextLinkNotNull);
+			data = apiConnector.makeApiRequest(nextLinkNotNull).asString();
 			docIDs.addAll(getDocID(results));
 			
 			mapper = new ObjectMapper();
