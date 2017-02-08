@@ -20,12 +20,12 @@ public class ApiConnector {
 	private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
 	public String makeAllDocsApiRequest() throws URISyntaxException, IOException {
-		return makeApiRequest(AdvancedQuery.advancedQueryUriString(getApiDocumentsUrl()))
+		return makeApiRequest(AdvancedQuery.uriStringForDefaultQuery(getApiDocumentsUrl()))
 				.asString();
 	}
 	
 	public String makeOneDocPerPageApiRequest() throws URISyntaxException, IOException {
-		return makeApiRequest(AdvancedQuery.advancedQueryOneDocPerPageUriString(getApiDocumentsUrl()))
+		return makeApiRequest(AdvancedQuery.uriStringForOneDocPerPageDefaultQuery(getApiDocumentsUrl()))
 				.asString();
 	}
 
