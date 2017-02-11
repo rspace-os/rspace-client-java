@@ -1,6 +1,14 @@
-//This class builds correctly formatted advanced queries, given the required
-//operand, queries and query types
+package com.researchspace.api.examples.java;
 
+import java.net.URISyntaxException;
+
+import org.apache.http.client.utils.URIBuilder;
+
+/**
+ * This class builds correctly formatted advanced queries, given the required
+ * operand, queries and query types
+ *
+ */
 public class AdvancedQuery {
 	
 	//set the operand of the advanced search (can be "and" or "or", default is "and")
@@ -9,18 +17,23 @@ public class AdvancedQuery {
 	public Query queries[];
 	public Query query;
 	
-	//constructor for multiple Advanced Queries
+	/** constructor for setting multiple query terms and operand */
 	public AdvancedQuery (String operand, Query... queries){
 		this.operand = operand;
 		this.queries = queries;
 	}
 	
-	//constructor for a single Advanced Query
+	/** constructor for setting multiple query terms with default operand */
 	public AdvancedQuery (Query... queries){
 		this.queries = queries;
 	}
 	
-	public String advancedQuery2JSON() {
+	/** default query */
+	public AdvancedQuery() {
+		this(new Query ("Basic Document", "form"));
+	}
+
+	private String toJSON() {
 		String queryJSON = "";
 		String queryTerms[] = new String[queries.length];
 		
@@ -49,4 +62,21 @@ public class AdvancedQuery {
 //		System.out.println(queryJSON);
 		return queryJSON;
 	}
+
+	
+	public static String uriStringForDefaultQuery(String apiDocumentsUrl) throws URISyntaxException {
+		URIBuilder builder = new URIBuilder(apiDocumentsUrl)
+				.setParameter("advancedQuery", (new AdvancedQuery()).toJSON());
+		return builder.build().toString();
+	}
+
+	public static String uriStringForOneDocPerPageDefaultQuery(String apiDocumentsUrl) throws URISyntaxException {
+		URIBuilder builder = new URIBuilder(apiDocumentsUrl)
+				.setParameter("advancedQuery",  (new AdvancedQuery()).toJSON())
+				.setParameter("pageNumber", "0")
+	    		.setParameter("pageSize", "1")
+	    		.setParameter("orderBy", "created asc");
+		return builder.build().toString();
+	}
+
 }
