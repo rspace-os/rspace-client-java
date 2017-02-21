@@ -32,10 +32,19 @@ public class ApiConnector {
 	public String makeSingleDocumentApiRequest(long docID) throws IOException {
 		return makeApiRequest(getApiSingleDocumentUrl(docID)).asString();
 	}
+
+	public String makeSingleCSVDocumentApiRequest(long docID) throws IOException {
+		return makeApiRequest(getApiSingleDocumentUrl(docID), "text/csv").asString();
+	}
+	
+	public Content makeApiRequest(String uriString) throws IOException {
+		return makeApiRequest(uriString, "application/json");
+	}
 	
 	/** This method makes the HTTP query and returns the results as a Content object */
-	public Content makeApiRequest(String uriString) throws IOException {
+	public Content makeApiRequest(String uriString, String acceptHeader) throws IOException {
 		return Request.Get(uriString)
+				.addHeader("Accept", acceptHeader)
 				.addHeader("apiKey", getConfigProperty("apiKey"))
 				.connectTimeout(10000)
 				.socketTimeout(10000)
