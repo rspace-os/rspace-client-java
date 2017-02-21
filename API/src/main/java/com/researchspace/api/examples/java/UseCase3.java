@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
  * TODO: should demonstrate retrieving CSV content from the server, which is supported by the API.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCase3 {
+public class UseCase3 {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		

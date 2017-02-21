@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
  * This use case saves document's attachment. 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserCase4 {
+public class UseCase4 {
 	
 	private static final long TEST_DOC_ID = 24407;
 	
