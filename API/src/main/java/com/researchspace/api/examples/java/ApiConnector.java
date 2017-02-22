@@ -42,9 +42,9 @@ public class ApiConnector {
 	}
 	
 	/** This method makes the HTTP query and returns the results as a Content object */
-	public Content makeApiRequest(String uriString, String acceptHeader) throws IOException {
+	public Content makeApiRequest(String uriString, String responseContentType) throws IOException {
 		return Request.Get(uriString)
-				.addHeader("Accept", acceptHeader)
+				.addHeader("Accept", responseContentType)
 				.addHeader("apiKey", getConfigProperty("apiKey"))
 				.connectTimeout(10000)
 				.socketTimeout(10000)
