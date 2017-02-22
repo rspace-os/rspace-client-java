@@ -9,6 +9,9 @@ import java.util.Properties;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.researchspace.api.examples.java.model.ApiDocument;
+
 /**
  * Main helper class providing methods for connecting to RSpace API.
  * The connection code uses serverURL and apiKey properties set in config file.  
@@ -29,8 +32,10 @@ public class ApiConnector {
 				.asString();
 	}
 
-	public String makeSingleDocumentApiRequest(long docID) throws IOException {
-		return makeApiRequest(getApiSingleDocumentUrl(docID)).asString();
+	public ApiDocument makeSingleDocumentApiRequest(long docID) throws IOException {
+		String docAsString = makeApiRequest(getApiSingleDocumentUrl(docID)).asString();
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(docAsString, ApiDocument.class);
 	}
 
 	public String makeSingleCSVDocumentApiRequest(long docID) throws IOException {

@@ -9,6 +9,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
+import com.researchspace.api.examples.java.model.ApiDocument;
+import com.researchspace.api.examples.java.model.ApiDocumentInfo;
+import com.researchspace.api.examples.java.model.ApiField;
 
 /**
  * UseCase1 - print content of all documents belonging to the user into results file.
@@ -28,16 +31,14 @@ public class UseCase1 {
 		
 		String resultString = "";
 		for(JsonNode document : allDocsNode.path("documents")) {
-			String docName = document.path("name").asText();
-			resultString += docName + ":\n";
 			
-			long docId = Long.parseLong(document.path("id").asText());
-			String singleDocOutput = apiConnector.makeSingleDocumentApiRequest(docId);
-			ObjectMapper mapper2 = new ObjectMapper();
-			JsonNode singleDocNode = mapper2.readTree(singleDocOutput);
-			for (JsonNode fieldNode : singleDocNode.path("fields")) {
-				String fieldName = fieldNode.path("name").asText();
-				String fieldValue = fieldNode.path("content").asText();
+			ApiDocumentInfo apiDocInfo = mapper.treeToValue(document, ApiDocumentInfo.class);
+			resultString += apiDocInfo.getName() + ":\n";
+			
+			ApiDocument apiDocWithFields = apiConnector.makeSingleDocumentApiRequest(apiDocInfo.getId());
+			for (ApiField field : apiDocWithFields.getFields()) {
+				String fieldName = field.getName();
+				String fieldValue = field.getContent();
 				resultString += fieldName + ": " + fieldValue + "\n";
 			}
 		}
