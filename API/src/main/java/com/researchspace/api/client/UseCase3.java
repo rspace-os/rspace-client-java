@@ -19,7 +19,11 @@ public class UseCase3 {
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
-		String allDocsOutput = apiConnector.makeAllDocsApiRequest();
+		
+		// search for Basic Documents 
+		AdvancedQueryElem basicFormQuery = new AdvancedQueryElem("Basic Document", "form");
+		AdvancedQuery advQuery = new AdvancedQuery(basicFormQuery);
+		String allDocsOutput = apiConnector.makeDocumentSearchRequest(advQuery);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode allDocsNode = mapper.readTree(allDocsOutput);

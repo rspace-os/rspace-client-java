@@ -3,7 +3,9 @@ package com.researchspace.api.client;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -25,10 +27,18 @@ public class UseCase2 {
 		
 		ApiConnector apiConnector = new ApiConnector();
 
-		//Create an advanced query for all documents made from a specified form template
+		//Create an advanced query for all Basic Documents
+		AdvancedQueryElem basicFormQuery = new AdvancedQueryElem("Basic Document", "form");
+		AdvancedQuery advQuery = new AdvancedQuery(basicFormQuery);
+
 		//Return the results by retrieving the first page of results and then linking to the
-		//next page... until the last page is reached
-		String data = apiConnector.makeOneDocPerPageApiRequest();
+		// next page... until the last page is reached
+		Map<String, String> extraSearchParams = new HashMap<>();
+		extraSearchParams.put("pageNumber", "0");
+		extraSearchParams.put("pageSize", "1");
+		extraSearchParams.put("orderBy", "created asc");
+		
+		String data = apiConnector.makeDocumentSearchRequest(advQuery, extraSearchParams);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		// data here is returned from /documents

@@ -1,13 +1,8 @@
 package com.researchspace.api.client;
 
-import java.net.URISyntaxException;
-
-import org.apache.http.client.utils.URIBuilder;
-
 /**
  * This class builds correctly formatted advanced queries, given the required
  * operand, queries and query types
- *
  */
 public class AdvancedQuery {
 	
@@ -28,50 +23,35 @@ public class AdvancedQuery {
 		this(OPERAND_AND, queries);
 	}
 	
-	private String toJSON() {
+	protected String toJSON() {
 		String queryJSON = "";
 		String queryTerms[] = new String[queries.length];
 		
-		//format individual queries into JSON
-		for(int i=0; i<queries.length; i++){
-			queryTerms[i] = "{\"query\": \"" + queries[i].getQuery() + "\", \"queryType\": \"" + queries[i].getQueryType() + "\" }";
+		// format individual queries into JSON
+		for (int i = 0; i < queries.length; i++) {
+			queryTerms[i] = "{\"query\": \"" + queries[i].getQuery() 
+					+ "\", \"queryType\": \"" + queries[i].getQueryType() 
+					+ "\" }";
 		}
 		
-		//add commas between multiple queries
-		for(int i=0; i<queryTerms.length-1; i++){
+		// add commas between multiple queries
+		for (int i = 0; i < queryTerms.length - 1; i++) {
 			queryTerms[i] = queryTerms[i] + ", ";
 			queryJSON = queryJSON + queryTerms[i];
 		}
 		queryJSON = queryJSON + queryTerms[queryTerms.length-1];
 		
-		//finally add square brackets
+		// finally add square brackets
 		queryJSON = "\"terms\": [ " + queryJSON + " ]";
 		
-		//Add operand if it is valid
-		if(queryTerms.length > 1 && (operand.equals("and")||operand.equals("or"))){
+		// add operand if it is valid
+		if (queryTerms.length > 1 && (operand.equals("and") || operand.equals("or"))) {
 			queryJSON = "{ \"operand\": " + operand + ", " + queryJSON + " }";
-		}
-		else {
+		} else {
 			queryJSON = "{ " + queryJSON + " }";
 		}
-//		System.out.println(queryJSON);
+
 		return queryJSON;
-	}
-
-	
-	public static String uriStringForDefaultQuery(String apiDocumentsUrl) throws URISyntaxException {
-		URIBuilder builder = new URIBuilder(apiDocumentsUrl)
-				.setParameter("advancedQuery", (new AdvancedQuery()).toJSON());
-		return builder.build().toString();
-	}
-
-	public static String uriStringForOneDocPerPageDefaultQuery(String apiDocumentsUrl) throws URISyntaxException {
-		URIBuilder builder = new URIBuilder(apiDocumentsUrl)
-				.setParameter("advancedQuery",  (new AdvancedQuery()).toJSON())
-				.setParameter("pageNumber", "0")
-	    		.setParameter("pageSize", "1")
-	    		.setParameter("orderBy", "created asc");
-		return builder.build().toString();
 	}
 
 }

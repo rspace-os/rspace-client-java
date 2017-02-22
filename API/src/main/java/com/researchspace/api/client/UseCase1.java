@@ -1,7 +1,6 @@
 package com.researchspace.api.client;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,7 +22,10 @@ public class UseCase1 {
 		
 		ApiConnector apiConnector = new ApiConnector();
 
-		String allDocsOutput = apiConnector.makeAllDocsApiRequest();
+		// search for Basic Documents
+		AdvancedQueryElem basicFormQuery = new AdvancedQueryElem("Basic Document", "form");
+		AdvancedQuery advQuery = new AdvancedQuery(basicFormQuery);
+		String allDocsOutput = apiConnector.makeDocumentSearchRequest(advQuery);
 		//System.out.println(allDocsOutput);
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -43,9 +45,7 @@ public class UseCase1 {
 			}
 		}
 		
-		try(PrintWriter out = new PrintWriter("UseCase1.txt")){
-		    out.println(resultString);
-		}
+		System.out.println(resultString);
 		System.out.println("done.");
 	}
 

@@ -4,10 +4,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.api.client.model.ApiDocument;
@@ -22,22 +25,49 @@ public class ApiConnector {
 	
 	private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
-	public String makeAllDocsApiRequest() throws URISyntaxException, IOException {
-		return makeApiRequest(AdvancedQuery.uriStringForDefaultQuery(getApiDocumentsUrl()))
-				.asString();
-	}
-	
-	public String makeOneDocPerPageApiRequest() throws URISyntaxException, IOException {
-		return makeApiRequest(AdvancedQuery.uriStringForOneDocPerPageDefaultQuery(getApiDocumentsUrl()))
-				.asString();
+	/** make advanced document search query */
+	public String makeDocumentSearchRequest(AdvancedQuery advQuery) throws URISyntaxException, IOException {
+		return makeDocumentSearchRequest(advQuery, null);
 	}
 
+	/** make advanced document search query, with additional parameters */
+	public String makeDocumentSearchRequest(AdvancedQuery advQuery, Map<String, String> searchParams) 
+			throws URISyntaxException, IOException {
+		String uri = getURIBuilderForAdvancedDocSearch(advQuery, searchParams)
+				.build().toString();
+		return makeApiRequest(uri).asString();
+	}
+
+	private URIBuilder getURIBuilderForAdvancedDocSearch(AdvancedQuery advQuery, Map<String, String> searchParams) 
+			throws URISyntaxException, IOException {
+
+		URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
+		builder.setParameter("advancedQuery", advQuery.toJSON());
+		
+		if (searchParams != null) {
+			for (Entry<String, String> param : searchParams.entrySet()) {
+				builder.setParameter(param.getKey(), param.getValue());
+			}
+		}
+		return builder;
+	};
+	
+	/**
+	 * Returns representation of a single document (with fields).
+	 */
 	public ApiDocument makeSingleDocumentApiRequest(long docID) throws IOException {
 		String docAsString = makeApiRequest(getApiSingleDocumentUrl(docID)).asString();
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(docAsString, ApiDocument.class);
 	}
 
+	/** 
+	 * Returns CSV content of a single document 
+	 * 
+	 * @param docID
+	 * @return document content, in CSV format
+	 * @throws IOException
+	 */
 	public String makeSingleCSVDocumentApiRequest(long docID) throws IOException {
 		return makeApiRequest(getApiSingleDocumentUrl(docID), "text/csv").asString();
 	}
@@ -47,7 +77,7 @@ public class ApiConnector {
 	}
 	
 	/** This method makes the HTTP query and returns the results as a Content object */
-	public Content makeApiRequest(String uriString, String responseContentType) throws IOException {
+	protected Content makeApiRequest(String uriString, String responseContentType) throws IOException {
 		return Request.Get(uriString)
 				.addHeader("Accept", responseContentType)
 				.addHeader("apiKey", getConfigProperty("apiKey"))
