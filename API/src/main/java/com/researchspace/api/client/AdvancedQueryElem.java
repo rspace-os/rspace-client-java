@@ -3,12 +3,12 @@ package com.researchspace.api.client;
 /** 
  * constructor for a query object comprised of the query term and the query type
  */
-public class Query {
+public class AdvancedQueryElem {
 	
-	public String query;
-	public String queryType;
+	private String query;
+	private String queryType;
 	
-	public Query (String query, String queryType) {
+	public AdvancedQueryElem (String query, String queryType) {
 		this.query = query;
 		this.queryType = queryType;
 	}

@@ -11,28 +11,23 @@ import org.apache.http.client.utils.URIBuilder;
  */
 public class AdvancedQuery {
 	
-	//set the operand of the advanced search (can be "and" or "or", default is "and")
-	public String operand = "and";
-	//set the query terms you wish to search and the query types
-	public Query queries[];
-	public Query query;
-	
+	public static final String OPERAND_AND = "and";
+	public static final String OPERAND_OR = "or";
+
+	private String operand = OPERAND_AND;
+	private AdvancedQueryElem queries[];
+
 	/** constructor for setting multiple query terms and operand */
-	public AdvancedQuery (String operand, Query... queries){
+	public AdvancedQuery (String operand, AdvancedQueryElem... queries){
 		this.operand = operand;
 		this.queries = queries;
 	}
 	
 	/** constructor for setting multiple query terms with default operand */
-	public AdvancedQuery (Query... queries){
-		this.queries = queries;
+	public AdvancedQuery (AdvancedQueryElem... queries){
+		this(OPERAND_AND, queries);
 	}
 	
-	/** default query */
-	public AdvancedQuery() {
-		this(new Query ("Basic Document", "form"));
-	}
-
 	private String toJSON() {
 		String queryJSON = "";
 		String queryTerms[] = new String[queries.length];
