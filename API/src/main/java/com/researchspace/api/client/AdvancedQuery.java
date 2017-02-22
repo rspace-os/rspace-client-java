@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java;
+package com.researchspace.api.client;
 
 import java.net.URISyntaxException;
 

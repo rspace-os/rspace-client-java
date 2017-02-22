@@ -22,7 +22,7 @@
  * limitations under the License.
  */
 
-package com.researchspace.api.examples.java.model;
+package com.researchspace.api.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -32,18 +32,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Form on which the document structure is based.
+ * An image, attachment or linked resource object, but without its binary data.
  */
 @Data
 @EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
-@JsonPropertyOrder(value={"id", "globalId","name", "stableId", "version"})
-public class ApiForm extends  IdentifiableNameableApiObject {
+@JsonPropertyOrder(value={"id", "globalId", "name", "contentType", "size", "_links"})
+public class ApiFile extends IdentifiableNameableApiObject {
 
-	@JsonProperty("stableId")
-	private String stableId = null;
+	@JsonProperty("contentType")
+	private String contentType = null;
 
-	@JsonProperty("version")
-	private Integer version = null;
-
+	@JsonProperty("size")
+	private Long size = null;
+	
 }

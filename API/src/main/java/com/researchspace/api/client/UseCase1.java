@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java;
+package com.researchspace.api.client;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,9 +9,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
-import com.researchspace.api.examples.java.model.ApiDocument;
-import com.researchspace.api.examples.java.model.ApiDocumentInfo;
-import com.researchspace.api.examples.java.model.ApiField;
+import com.researchspace.api.client.model.ApiDocument;
+import com.researchspace.api.client.model.ApiDocumentInfo;
+import com.researchspace.api.client.model.ApiField;
 
 /**
  * UseCase1 - print content of all documents belonging to the user into results file.

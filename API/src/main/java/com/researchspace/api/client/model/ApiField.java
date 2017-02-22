@@ -22,9 +22,11 @@
  * limitations under the License.
  */
 
-package com.researchspace.api.examples.java.model;
+package com.researchspace.api.client.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -32,33 +34,65 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
- * Basic information about RSpace Document
+ * A field in a Document, with a list of attached Files
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
-@JsonPropertyOrder(value={"id", "globalId", "name", "created", "lastModified", "signed", "tags",
-		"form", "owner", "_links"})
-public class ApiDocumentInfo extends IdentifiableNameableApiObject {
+@EqualsAndHashCode(callSuper=false)
+@ToString(callSuper = true, of={ "type", "lastModified"})
+@JsonPropertyOrder(value={"id", "globalId", "name", "lastModified", "type",  "content", "files", "_links"})
+public class ApiField extends IdentifiableNameableApiObject {
 
-	@JsonProperty("created")
-	private Date created = null;
-	
+	@JsonProperty("type")
+	private TypeEnum type = null;
+
+	@JsonProperty("content")
+	private String content = null;
+
 	@JsonProperty("lastModified")
 	private Date lastModified = null;
 
-	@JsonProperty("signed")
-	private Boolean signed = null;
+	@JsonProperty("files")
+	private List<ApiFile> files = new ArrayList<>();
 
-	@JsonProperty("tags")
-	private String tags = null;
+	/**
+	 * The data type of this field
+	 */
+	public enum TypeEnum {
+		@JsonProperty("string")
+		STRING("string"),
 
-	@JsonProperty("form")
-	private ApiForm form = null;
+		@JsonProperty("text")
+		TEXT("text"),
 
-	@JsonProperty("owner")
-	private ApiUser owner = null;
+		@JsonProperty("choice")
+		CHOICE("choice"),
 
+		@JsonProperty("radio")
+		RADIO("radio"),
+
+		@JsonProperty("date")
+		DATE("date"),
+
+		@JsonProperty("number")
+		NUMBER("number"),
+
+		@JsonProperty("time")
+		TIME("time");
+
+		private String value;
+
+		TypeEnum(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+	}
+	
 }

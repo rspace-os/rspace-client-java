@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java;
+package com.researchspace.api.client;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.researchspace.api.examples.java.model.ApiDocument;
+import com.researchspace.api.client.model.ApiDocument;
 
 /**
  * Main helper class providing methods for connecting to RSpace API.

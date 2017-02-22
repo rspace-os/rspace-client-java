@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java;
+package com.researchspace.api.client;
 
 /** 
  * constructor for a query object comprised of the query term and the query type

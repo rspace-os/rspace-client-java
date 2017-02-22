@@ -22,10 +22,7 @@
  * limitations under the License.
  */
 
-package com.researchspace.api.examples.java.model;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.researchspace.api.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -35,16 +32,18 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * A document with fields
+ * The Form on which the document structure is based.
  */
 @Data
 @EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
-@JsonPropertyOrder(value={"id", "globalId", "name", "created", "lastModified", "signed", "tags", 
-		"form", "owner", "fields", "_links"})
-public class ApiDocument extends ApiDocumentInfo {
+@JsonPropertyOrder(value={"id", "globalId","name", "stableId", "version"})
+public class ApiForm extends  IdentifiableNameableApiObject {
 
-	@JsonProperty("fields")
-	private List<ApiField> fields = new ArrayList<>();
-	
+	@JsonProperty("stableId")
+	private String stableId = null;
+
+	@JsonProperty("version")
+	private Integer version = null;
+
 }

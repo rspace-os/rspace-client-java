@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java;
+package com.researchspace.api.client;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +10,9 @@ import org.apache.commons.io.FileUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.researchspace.api.examples.java.model.ApiDocument;
-import com.researchspace.api.examples.java.model.ApiField;
-import com.researchspace.api.examples.java.model.ApiFile;
+import com.researchspace.api.client.model.ApiDocument;
+import com.researchspace.api.client.model.ApiField;
+import com.researchspace.api.client.model.ApiFile;
 
 /**
  * This use case saves document's attachment. 

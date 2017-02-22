@@ -1,4 +1,4 @@
-package com.researchspace.api.examples.java.model;
+package com.researchspace.api.client.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
