@@ -1,10 +1,11 @@
-package com.researchspace.api.client;
+package com.researchspace.api.client.examples;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
 
+import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
@@ -27,7 +28,7 @@ public class UseCase1 {
 			resultString += apiDocInfo.getGlobalId() + " - " + apiDocInfo.getName() 
 				+ " (" + apiDocInfo.getForm().getName() + "):\n";
 			
-			ApiDocument apiDocWithFields = apiConnector.makeSingleDocumentApiRequest(apiDocInfo.getId());
+			ApiDocument apiDocWithFields = apiConnector.makeSingleDocumentRequest(apiDocInfo.getId());
 			for (ApiField field : apiDocWithFields.getFields()) {
 				String fieldName = field.getName();
 				String fieldValue = field.getContent();

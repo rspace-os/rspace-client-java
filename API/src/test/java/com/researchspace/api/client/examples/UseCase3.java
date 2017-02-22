@@ -1,4 +1,4 @@
-package com.researchspace.api.client;
+package com.researchspace.api.client.examples;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,6 +6,9 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
+import com.researchspace.api.client.AdvancedQuery;
+import com.researchspace.api.client.AdvancedQueryElem;
+import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 
@@ -26,7 +29,7 @@ public class UseCase3 {
 		
 		for(ApiDocumentInfo apiDocInfo : paginatedDocs.getDocuments()) {
 			long docId = apiDocInfo.getId();
-			String output1 = apiConnector.makeSingleCSVDocumentApiRequest(docId);
+			String output1 = apiConnector.makeSingleCSVDocumentRequest(docId);
 			try(PrintWriter out = new PrintWriter("UseCase3-" + docId + ".csv")){
 			    out.println(output1);
 			}

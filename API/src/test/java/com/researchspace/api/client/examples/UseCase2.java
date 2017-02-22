@@ -1,4 +1,4 @@
-package com.researchspace.api.client;
+package com.researchspace.api.client.examples;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.researchspace.api.client.AdvancedQuery;
+import com.researchspace.api.client.AdvancedQueryElem;
+import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
