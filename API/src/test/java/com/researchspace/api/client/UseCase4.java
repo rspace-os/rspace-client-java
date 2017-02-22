@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiField;
@@ -20,7 +21,8 @@ public class UseCase4 {
 	
 	private static final long TEST_DOC_ID = 21609;
 	
-	public static void main(String[] args) throws URISyntaxException, IOException {
+	@Test
+	public void downloadAttachments() throws URISyntaxException, IOException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocument document = apiConnector.makeSingleDocumentApiRequest(TEST_DOC_ID);

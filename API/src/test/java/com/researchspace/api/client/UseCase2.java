@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
@@ -19,7 +21,8 @@ import com.researchspace.api.client.model.ApiLinkItem;
  */
 public class UseCase2 {
 
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	@Test
+	public void printPaginatedResults() throws IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 

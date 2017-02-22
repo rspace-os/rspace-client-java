@@ -3,6 +3,8 @@ package com.researchspace.api.client;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.junit.Test;
+
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
@@ -13,7 +15,8 @@ import com.researchspace.api.client.model.ApiField;
  */
 public class UseCase1 {
 
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	@Test
+	public void printAllDocs() throws IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest(null);

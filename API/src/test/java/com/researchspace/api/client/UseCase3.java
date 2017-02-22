@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
+import org.junit.Test;
+
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 
@@ -12,7 +14,8 @@ import com.researchspace.api.client.model.ApiDocumentSearchResult;
  */
 public class UseCase3 {
 	
-	public static void main(String[] args) throws IOException, URISyntaxException {
+	@Test
+	public void downloadDocsAsCSV() throws IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 		
