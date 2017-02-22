@@ -8,21 +8,19 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiField;
 import com.researchspace.api.client.model.ApiFile;
+import com.researchspace.api.client.model.ApiLinkItem;
 
 /**
  * This use case saves document's attachment. 
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UseCase4 {
 	
 	private static final long TEST_DOC_ID = 21609;
 	
-	public static void main(String[] args) throws URISyntaxException, JsonProcessingException, IOException {
+	public static void main(String[] args) throws URISyntaxException, IOException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocument document = apiConnector.makeSingleDocumentApiRequest(TEST_DOC_ID);
@@ -31,7 +29,7 @@ public class UseCase4 {
 		List<ApiFile> files = fields.get(0).getFiles();
 
 		for (ApiFile apiFile : files) {
-			String fileData = apiFile.getLinks().get(1).getLink();
+			String fileData = apiFile.getLinkByType(ApiLinkItem.ENCLOSURE_REL);
 			System.out.println(fileData);
 			
 			InputStream content = apiConnector.makeApiRequest(fileData).asStream();

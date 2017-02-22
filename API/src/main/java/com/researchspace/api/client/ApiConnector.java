@@ -14,6 +14,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.api.client.model.ApiDocument;
+import com.researchspace.api.client.model.ApiDocumentSearchResult;
 
 /**
  * Main helper class providing methods for connecting to RSpace API.
@@ -25,24 +26,36 @@ public class ApiConnector {
 	
 	private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
-	/** make advanced document search query */
-	public String makeDocumentSearchRequest(AdvancedQuery advQuery) throws URISyntaxException, IOException {
+	/** 
+	 * Makes advanced document search query, returns string response. 
+	 *
+	 * @param advQuery advanced query to limit search results. may be null.
+	 */
+	public ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery) 
+			throws URISyntaxException, IOException {
 		return makeDocumentSearchRequest(advQuery, null);
 	}
 
 	/** make advanced document search query, with additional parameters */
-	public String makeDocumentSearchRequest(AdvancedQuery advQuery, Map<String, String> searchParams) 
-			throws URISyntaxException, IOException {
-		String uri = getURIBuilderForAdvancedDocSearch(advQuery, searchParams)
-				.build().toString();
-		return makeApiRequest(uri).asString();
+	public ApiDocumentSearchResult makeDocumentSearchRequest(
+			AdvancedQuery advQuery, Map<String, String> searchParams) 
+					throws URISyntaxException, IOException {
+		
+		String uri = getURIBuilderForAdvancedDocSearch(advQuery, searchParams).build().toString();
+		String docSearchResponse = makeApiRequest(uri).asString();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(docSearchResponse, ApiDocumentSearchResult.class);
 	}
 
-	private URIBuilder getURIBuilderForAdvancedDocSearch(AdvancedQuery advQuery, Map<String, String> searchParams) 
-			throws URISyntaxException, IOException {
+	private URIBuilder getURIBuilderForAdvancedDocSearch(
+			AdvancedQuery advQuery, Map<String, String> searchParams) 
+					throws URISyntaxException, IOException {
 
 		URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
-		builder.setParameter("advancedQuery", advQuery.toJSON());
+		if (advQuery != null) {
+			builder.setParameter("advancedQuery", advQuery.toJSON());
+		}
 		
 		if (searchParams != null) {
 			for (Entry<String, String> param : searchParams.entrySet()) {
@@ -72,7 +85,13 @@ public class ApiConnector {
 		return makeApiRequest(getApiSingleDocumentUrl(docID), "text/csv").asString();
 	}
 	
-	public Content makeApiRequest(String uriString) throws IOException {
+	public <T> T makeLinkedObjectRequest(String link, Class<T> objectType) throws IOException {
+		String objectAsString = makeApiRequest(link, "application/json").asString();
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(objectAsString, objectType);
+	}
+	
+	protected Content makeApiRequest(String uriString) throws IOException {
 		return makeApiRequest(uriString, "application/json");
 	}
 	

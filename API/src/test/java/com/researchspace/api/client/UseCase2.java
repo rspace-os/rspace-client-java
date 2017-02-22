@@ -4,26 +4,22 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;// in play 2.3
+import com.researchspace.api.client.model.ApiDocumentInfo;
+import com.researchspace.api.client.model.ApiDocumentSearchResult;
+import com.researchspace.api.client.model.ApiLinkItem;
 
-/** This use case navigates through paginated document results by using 
+/** 
+ * This use case navigates through paginated document results by using 
  * the _links property within documents.
  * 
  * The _links property contains pre-created links to the next, previous,
  * first or last page of results, as appropriate.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UseCase2 {
 
-	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+	public static void main(String[] args) throws IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
 
@@ -38,57 +34,28 @@ public class UseCase2 {
 		extraSearchParams.put("pageSize", "1");
 		extraSearchParams.put("orderBy", "created asc");
 		
-		String data = apiConnector.makeDocumentSearchRequest(advQuery, extraSearchParams);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		// data here is returned from /documents
-		JsonNode results = mapper.readTree(data);
-		Optional<String> nextLink = getLink(results, "next");
-		System.err.println(nextLink.orElse("No next link"));
-		Optional<String> prevLink = getLink(results, "last");
-		System.err.println(prevLink.orElse("No last link"));
+		ApiDocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest(advQuery, extraSearchParams);
+		String nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
+
+		System.out.println("at page: " + paginatedDocs.getPageNumber());
+		System.out.println("next link: " + nextLink);
 		
 		//Select document ID of all documents returned using "next" link
-		ArrayList<Integer> docIDs = new ArrayList<Integer>();
-		while (nextLink.isPresent()){
-			String nextLinkNotNull = nextLink.get();
-			data = apiConnector.makeApiRequest(nextLinkNotNull).asString();
-			docIDs.addAll(getDocID(results));
-			
-			mapper = new ObjectMapper();
-			results = mapper.readTree(data);
-			nextLink = getLink(results, "next");
-			System.err.println(nextLink.orElse("No next link"));
-			prevLink = getLink(results, "last");
-			System.err.println(prevLink.orElse("No last link"));
+		ArrayList<ApiDocumentInfo> allDocs = new ArrayList<>();
+		allDocs.addAll(paginatedDocs.getDocuments());
+		
+		while (nextLink != null){
+			paginatedDocs = apiConnector.makeLinkedObjectRequest(nextLink, ApiDocumentSearchResult.class);
+			allDocs.addAll(paginatedDocs.getDocuments());
+			nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
+
+			System.out.println("at page: " + paginatedDocs.getPageNumber());
+			System.out.println("next link: " + nextLink);
 		}
 		
-		docIDs.addAll(getDocID(results));
-		for(int docID: docIDs){
-			System.out.println(docID);
+		for (ApiDocumentInfo doc : allDocs) {
+			System.out.println(doc.getGlobalId() + " - " + doc.getName());
 		}
-	}
-	
-	static Optional<String> getLink (JsonNode results, String relType){
-	    String nextLink = null;
-	    Iterator<JsonNode> it = results.get("_links").elements();
-	    while(it.hasNext()) {
-		JsonNode node = it.next();
-		if (relType.equals(node.get("rel").textValue())){
-		    nextLink=  node.get("link").asText();
-		    break;
-		};
-	    } 
-	    return Optional.ofNullable(nextLink);
-	}
-	
-	static ArrayList<Integer> getDocID (JsonNode results){
-		ArrayList<Integer> theseDocIDs = new ArrayList<Integer>();
-		for(JsonNode document : results.path("documents")){
-			int docID = document.path("id").asInt();
-			theseDocIDs.add(docID);
-		}
-		return theseDocIDs;
 	}
 
 }

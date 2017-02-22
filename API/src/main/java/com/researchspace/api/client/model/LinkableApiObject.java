@@ -14,19 +14,14 @@ public abstract class LinkableApiObject {
 	
 	@JsonProperty("_links")
 	protected List<ApiLinkItem> links = new ArrayList<ApiLinkItem>();
-	
-	public LinkableApiObject(List<ApiLinkItem> links) {
-		this.links = links;
-	}
 
-	public LinkableApiObject addLink(String link, String linkType) {
-		links.add(new ApiLinkItem(link, linkType));
-		return this;
+	public String getLinkByType (String relType){
+	    for (ApiLinkItem link : links) {
+	    	if (relType.equals(link.getRel())) {
+	    		return link.getLink();
+	    	}
+		}
+	    return null;
 	}
 	
-	public LinkableApiObject addSelfLink(String link) {
-		links.add(new ApiLinkItem(link, ApiLinkItem.SELF_REL));
-		return this;
-	}
-
 }
