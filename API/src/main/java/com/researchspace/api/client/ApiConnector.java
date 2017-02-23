@@ -39,16 +39,26 @@ public class ApiConnector {
 	}
 	
 	/** 
-	 * Makes advanced document search query, returns string response. 
+	 * Makes advanced document search query. 
 	 *
-	 * @param advQuery advanced query to limit search results. may be null.
+	 * @param advQuery advanced query to limit search results, may be null
+	 * @returns a page of search results, with default pagination (20 results per page)
+	 *  		and ordering ("last modified desc")
 	 */
 	public ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery) 
 			throws URISyntaxException, IOException {
 		return makeDocumentSearchRequest(advQuery, null);
 	}
 
-	/** make advanced document search query, with additional parameters */
+	/** 
+	 * Make advanced document search query, with additional parameters.
+	 * Results are paginated, with 20 elements on a page by default.
+	 *  
+	 * @param advQuery advanced query to limit search results. may be null
+	 * @param searchParams additional search parameters i.e. pageNumber, pageSize, orderBy, filter
+	 * @returns a page of search results, paginated and order according to the search parameters
+	 * 		(by default: 20 results per page, "last modified desc" order) 
+	 */
 	public ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery, 
 			Map<String, String> searchParams) throws URISyntaxException, IOException {
 		
