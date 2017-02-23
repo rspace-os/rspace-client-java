@@ -11,19 +11,52 @@ import org.junit.Test;
 import com.researchspace.api.client.AdvancedQuery;
 import com.researchspace.api.client.AdvancedQueryElem;
 import com.researchspace.api.client.ApiConnector;
+import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
+import com.researchspace.api.client.model.ApiField;
 import com.researchspace.api.client.model.ApiLinkItem;
 
 /** 
- * This use case navigates through paginated document results by using 
- * the _links property within documents.
- * 
- * The _links property contains pre-created links to the next, previous,
- * first or last page of results, as appropriate.
+ * TODO: a test using basic search
+ * TODO: a test using advanced search with more than one search term
  */
-public class UseCase2 {
+public class SearchForDocuments {
 
+	/**
+	 * Print names, types and content of every document in user's workspace
+	 */
+	@Test
+	public void printAllDocs() throws IOException, URISyntaxException {
+		
+		ApiConnector apiConnector = new ApiConnector();
+		ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest(null);
+		
+		String resultString = "";
+		for(ApiDocumentInfo apiDocInfo : allDocs.getDocuments()) {
+			
+			resultString += apiDocInfo.getGlobalId() + " - " + apiDocInfo.getName() 
+				+ " (" + apiDocInfo.getForm().getName() + "):\n";
+			
+			ApiDocument apiDocWithFields = apiConnector.makeSingleDocumentRequest(apiDocInfo.getId());
+			for (ApiField field : apiDocWithFields.getFields()) {
+				String fieldName = field.getName();
+				String fieldValue = field.getContent();
+				resultString += fieldName + ": " + fieldValue + "\n";
+			}
+		}
+		
+		System.out.println(resultString);
+		System.out.println("done.");
+	}
+
+	/** 
+	 * This test navigates through paginated document results by using 
+	 * the _links property within documents.
+	 * 
+	 * The _links property contains pre-created links to the next, previous,
+	 * first or last page of results, as appropriate.
+	 */
 	@Test
 	public void printPaginatedResults() throws IOException, URISyntaxException {
 		
@@ -63,6 +96,6 @@ public class UseCase2 {
 			System.out.println(doc.getGlobalId() + " - " + doc.getName());
 		}
 	}
-
+	
 }
 

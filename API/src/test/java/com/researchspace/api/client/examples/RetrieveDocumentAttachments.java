@@ -17,7 +17,7 @@ import com.researchspace.api.client.model.ApiFile;
 /**
  * This use case saves document's attachment. 
  */
-public class UseCase4 {
+public class RetrieveDocumentAttachments {
 	
 	private static final long TEST_DOC_ID = 21609;
 	

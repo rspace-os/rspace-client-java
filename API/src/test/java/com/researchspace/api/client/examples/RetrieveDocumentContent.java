@@ -14,9 +14,15 @@ import com.researchspace.api.client.model.ApiDocumentSearchResult;
 
 /** 
  * Iterate through documents and put their content into CSV file.
+ * 
+ * TODO: a test that retrieves full document and prints its content
+ * 
  */
-public class UseCase3 {
+public class RetrieveDocumentContent {
 	
+	/** 
+	 * Iterate through documents and put their content into CSV file.
+	 */
 	@Test
 	public void downloadDocsAsCSV() throws IOException, URISyntaxException {
 		
