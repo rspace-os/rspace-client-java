@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -119,12 +120,13 @@ public class ApiConnector {
 	
 	/* makes the HTTP query and returns the results as a Content object */
 	protected Content makeApiRequest(String uriString, String responseContentType) throws IOException {
-		return Request.Get(uriString)
+		Response response = Request.Get(uriString)
 				.addHeader("Accept", responseContentType)
 				.addHeader("apiKey", apiKey)
 				.connectTimeout(CONNECT_TIMEOUT)
 				.socketTimeout(SOCKET_TIMEOUT)
-				.execute().returnContent();
+				.execute();
+		return response.returnContent();
 	}
 	
 	protected String getApiDocumentsUrl() {

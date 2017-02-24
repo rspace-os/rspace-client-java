@@ -6,21 +6,21 @@ package com.researchspace.api.client;
  */
 public class AdvancedQuery {
 	
-	public static final String OPERAND_AND = "and";
-	public static final String OPERAND_OR = "or";
+	public static final String OPERATOR_AND = "and";
+	public static final String OPERATOR_OR = "or";
 
-	private String operand = OPERAND_AND;
+	private String operator = OPERATOR_AND;
 	private AdvancedQueryElem queries[];
 
 	/** constructor for setting multiple query terms and operand */
-	public AdvancedQuery (String operand, AdvancedQueryElem... queries){
-		this.operand = operand;
+	public AdvancedQuery (String operator, AdvancedQueryElem... queries){
+		this.operator = operator;
 		this.queries = queries;
 	}
 	
 	/** constructor for setting multiple query terms with default operand */
 	public AdvancedQuery (AdvancedQueryElem... queries){
-		this(OPERAND_AND, queries);
+		this(OPERATOR_AND, queries);
 	}
 	
 	protected String toJSON() {
@@ -45,8 +45,8 @@ public class AdvancedQuery {
 		queryJSON = "\"terms\": [ " + queryJSON + " ]";
 		
 		// add operand if it is valid
-		if (queryTerms.length > 1 && (operand.equals("and") || operand.equals("or"))) {
-			queryJSON = "{ \"operand\": " + operand + ", " + queryJSON + " }";
+		if (queryTerms.length > 1 && (operator.equals("and") || operator.equals("or"))) {
+			queryJSON = "{ \"operator\": \"" + operator + "\", " + queryJSON + " }";
 		} else {
 			queryJSON = "{ " + queryJSON + " }";
 		}

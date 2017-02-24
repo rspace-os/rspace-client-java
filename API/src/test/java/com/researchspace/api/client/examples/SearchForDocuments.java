@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.researchspace.api.client.AdvancedQuery;
+import com.researchspace.api.client.AdvancedQueryElem;
 import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
@@ -14,7 +16,6 @@ import com.researchspace.api.client.model.ApiLinkItem;
 
 /** 
  * TODO: a test using basic search
- * TODO: a test using advanced search with more than one search term
  */
 public class SearchForDocuments {
 
@@ -33,7 +34,7 @@ public class SearchForDocuments {
 		System.out.println("Printing first " + allDocs.getDocuments().size() + " document(s).");
 		
 		for(ApiDocumentInfo apiDocInfo : allDocs.getDocuments()) {
-			printDocDetailsToSysout(apiDocInfo);
+			printOutDocDetails(apiDocInfo);
 		}
 	}
 
@@ -60,7 +61,7 @@ public class SearchForDocuments {
 			System.out.println("next link: " + nextLink);
 
 			for (ApiDocumentInfo doc : paginatedDocs.getDocuments()) {
-				printDocDetailsToSysout(doc);
+				printOutDocDetails(doc);
 			}
 			nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
 			if (nextLink != null) {
@@ -69,10 +70,35 @@ public class SearchForDocuments {
 		} 
 	}
 
-	private void printDocDetailsToSysout(ApiDocumentInfo docInfo) {
-		String docDetailsLine = String.format("Document: %s, form: %s, globalId: %s, createdAt: %s", 
-				docInfo.getName(), docInfo.getForm().getName(), docInfo.getGlobalId(), docInfo.getCreated());
-		System.out.println(docDetailsLine);
+	/**
+	 * Search for documents with a particular tag and name.
+	 */
+	@Test
+	public void advancedSearch() throws IOException, URISyntaxException {
+
+		/** search terms */
+		String searchedName = "doc*";
+		String searchedTag = "apiSearchTag";
+		
+		AdvancedQueryElem nameSearchTerm = new AdvancedQueryElem(searchedName, "name");
+		AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
+		AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
+
+		ApiConnector apiConnector = new ApiConnector();
+		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery);
+
+		System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
+				searchResult.getTotalHits(), searchedName, searchedTag);
+		for(ApiDocumentInfo apiDocInfo : searchResult.getDocuments()) {
+			printOutDocDetails(apiDocInfo);
+		}
+	}
+	
+	private void printOutDocDetails(ApiDocumentInfo docInfo) {
+		String details = String.format("Document: %s, form: %s, globalId: %s, createdAt: %s, lastModified: %s", 
+				docInfo.getName(), docInfo.getForm().getName(), docInfo.getGlobalId(), docInfo.getCreated(), 
+				docInfo.getLastModified());
+		System.out.println(details);
 	}
 	
 }
