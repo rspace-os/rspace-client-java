@@ -15,7 +15,8 @@ import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
 
 /** 
- * TODO: a test using basic search
+ * Tests demonstrate how to search for documents using various criteria and query types,
+ * and how to navigate paginated results returned by the API.
  */
 public class SearchForDocuments {
 
@@ -27,10 +28,9 @@ public class SearchForDocuments {
 	public void printRecentlyUpdatedDocs() throws IOException, URISyntaxException {
 		
 		ApiConnector apiConnector = new ApiConnector();
-		ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest(null);
+		ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
 
-		Long totalHits = allDocs.getTotalHits();
-		System.out.println("User has " + totalHits + " document(s) in their Workspace.");
+		System.out.println("User has " + allDocs.getTotalHits() + " document(s) in their Workspace.");
 		System.out.println("Printing first " + allDocs.getDocuments().size() + " document(s).");
 		
 		for(ApiDocumentInfo apiDocInfo : allDocs.getDocuments()) {
@@ -53,7 +53,7 @@ public class SearchForDocuments {
 		Map<String, String> extraSearchParams = new HashMap<>();
 		extraSearchParams.put("orderBy", "created asc");
 
-		ApiDocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest(null, extraSearchParams);
+		ApiDocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest("", extraSearchParams);
 		String nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
 
 		while (nextLink != null) {
@@ -68,6 +68,22 @@ public class SearchForDocuments {
 				paginatedDocs = apiConnector.makeLinkedObjectRequest(nextLink, ApiDocumentSearchResult.class);
 			}
 		} 
+	}
+
+	/** 
+	 * General search for a particular phrase. Corresponds to Workspace 'All' search.
+	 */
+	@Test
+	public void simpleSearch() throws IOException, URISyntaxException {
+
+		String searchQuery = "api*";
+		ApiConnector apiConnector = new ApiConnector();
+		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
+
+		System.out.printf("Found %d document(s) matching the '%s' query: \n", searchResult.getTotalHits(), searchQuery);
+		for (ApiDocumentInfo doc : searchResult.getDocuments()) {
+			printOutDocDetails(doc);
+		}
 	}
 
 	/**
@@ -85,7 +101,7 @@ public class SearchForDocuments {
 		AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
 
 		ApiConnector apiConnector = new ApiConnector();
-		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery);
+		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
 
 		System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
 				searchResult.getTotalHits(), searchedName, searchedTag);

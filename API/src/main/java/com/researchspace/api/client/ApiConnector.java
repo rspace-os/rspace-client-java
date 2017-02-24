@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -40,49 +41,55 @@ public class ApiConnector {
 	}
 	
 	/** 
-	 * Makes advanced document search query. 
-	 *
-	 * @param advQuery advanced query to limit search results, may be null
-	 * @returns a page of search results, with default pagination (20 results per page)
-	 *  		and ordering ("last modified desc")
+	 * General search for a particular phrase. Corresponds to Workspace 'All' search.
+	 * 
+	 * @param searchQuery (optional) to limit search results
+	 * @param searchParams (optional) additional search parameters i.e. pageNumber, pageSize, orderBy, filter
+	 * @returns a page of search results, paginated and order according to the search parameters
+	 * 		(by default: 20 results per page, "last modified desc" order)
 	 */
-	public ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery) 
-			throws URISyntaxException, IOException {
-		return makeDocumentSearchRequest(advQuery, null);
+	public ApiDocumentSearchResult makeDocumentSearchRequest(String searchQuery, 
+			Map<String, String> searchParams) throws URISyntaxException, IOException {
+
+		return makeDocSearchRequest(searchQuery, null, searchParams);
 	}
 
 	/** 
 	 * Make advanced document search query, with additional parameters.
 	 * Results are paginated, with 20 elements on a page by default.
 	 *  
-	 * @param advQuery advanced query to limit search results. may be null
-	 * @param searchParams additional search parameters i.e. pageNumber, pageSize, orderBy, filter
+	 * @param advQuery (optional) advanced query to limit search results
+	 * @param searchParams (optional) additional search parameters i.e. pageNumber, pageSize, orderBy, filter
 	 * @returns a page of search results, paginated and order according to the search parameters
 	 * 		(by default: 20 results per page, "last modified desc" order) 
 	 */
 	public ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery, 
 			Map<String, String> searchParams) throws URISyntaxException, IOException {
-		
-		String uri = getURIBuilderForDocSearch(advQuery, searchParams).build().toString();
-		String docSearchResponse = makeApiRequest(uri).asString();
-		
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(docSearchResponse, ApiDocumentSearchResult.class);
+
+		return makeDocSearchRequest(null, advQuery, searchParams);
 	}
 
-	private URIBuilder getURIBuilderForDocSearch(AdvancedQuery advQuery, 
-			Map<String, String> searchParams) throws URISyntaxException {
+	private ApiDocumentSearchResult makeDocSearchRequest(String searchQuery, AdvancedQuery advQuery, 
+			Map<String, String> searchParams) throws URISyntaxException, IOException {
 
-		URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
+		if (searchParams == null) {
+			searchParams = new HashMap<String, String>();
+		}
+		if (searchQuery != null && searchQuery.length() > 0) {
+			searchParams.put("query", searchQuery);
+		}
 		if (advQuery != null) {
-			builder.setParameter("advancedQuery", advQuery.toJSON());
+			searchParams.put("advancedQuery", advQuery.toJSON());
 		}
-		if (searchParams != null) {
-			for (Entry<String, String> param : searchParams.entrySet()) {
-				builder.setParameter(param.getKey(), param.getValue());
-			}
+		
+		URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
+		for (Entry<String, String> param : searchParams.entrySet()) {
+			builder.setParameter(param.getKey(), param.getValue());
 		}
-		return builder;
+		String uri = builder.build().toString();
+		String docSearchResponse = makeApiRequest(uri).asString();
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(docSearchResponse, ApiDocumentSearchResult.class);
 	};
 	
 	/**
