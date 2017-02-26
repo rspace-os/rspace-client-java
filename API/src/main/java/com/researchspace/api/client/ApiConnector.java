@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiFile;
+import com.researchspace.api.client.model.ApiFileSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
 
 /**
@@ -26,7 +27,9 @@ import com.researchspace.api.client.model.ApiLinkItem;
  */
 public class ApiConnector {
 	
-	private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents"; 
+	private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents";
+	private static final String API_FILES_ENDPOINT = "/api/v1/files"; 
+	
 	private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
 
 	private static final int SOCKET_TIMEOUT = 10000;
@@ -121,6 +124,26 @@ public class ApiConnector {
 		return makeApiRequest(fileDataLink).asStream();
 	}
 	
+	public ApiFileSearchResult makeFileSearchRequest(String mediaType, 
+			Map<String, String> searchParams) throws URISyntaxException, IOException {
+
+		if (searchParams == null) {
+			searchParams = new HashMap<String, String>();
+		}
+		if (mediaType != null && mediaType.length() > 0) {
+			searchParams.put("mediaType", mediaType);
+		}
+		
+		URIBuilder builder = new URIBuilder(getApiFilesUrl());
+		for (Entry<String, String> param : searchParams.entrySet()) {
+			builder.setParameter(param.getKey(), param.getValue());
+		}
+		String uri = builder.build().toString();
+		String docSearchResponse = makeApiRequest(uri).asString();
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(docSearchResponse, ApiFileSearchResult.class);
+	}
+
 	protected Content makeApiRequest(String uriString) throws IOException {
 		return makeApiRequest(uriString, "application/json");
 	}
@@ -144,6 +167,10 @@ public class ApiConnector {
 		return getApiDocumentsUrl() + "/" + docID;
 	}
 
+	protected String getApiFilesUrl() {
+		return serverURL + API_FILES_ENDPOINT;
+	}
+	
 	/* returns property value from config file */
 	protected String getConfigProperty(String propertyName) throws IOException {
 		Properties prop = new Properties();
