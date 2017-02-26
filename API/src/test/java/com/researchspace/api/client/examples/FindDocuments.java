@@ -15,10 +15,10 @@ import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
 
 /** 
- * Tests demonstrate how to search for documents using various criteria and query types,
- * and how to navigate paginated results returned by the API.
+ * Example code that finds documents using various criteria and search types,
+ * also demonstrates how to navigate paginated results returned by the API.
  */
-public class SearchForDocuments {
+public class FindDocuments {
 
 	/**
 	 * Prints 20 last modified documents that user has access to.
@@ -30,6 +30,7 @@ public class SearchForDocuments {
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
 
+		/* search results are paginated, printing only the first page */
 		System.out.println("User has " + allDocs.getTotalHits() + " document(s) in their Workspace.");
 		System.out.println("Printing first " + allDocs.getDocuments().size() + " document(s).");
 		
@@ -41,7 +42,7 @@ public class SearchForDocuments {
 	/** 
 	 * Print all documents that user has access to, ordered by creation date.
 	 *
-	 * Document search results are always paginated (with 20 elements per page by default),
+	 * Document search results are paginated (with 20 elements per page by default),
 	 * and the code below uses 'next' links to go through all pages.
 	 */
 	@Test
@@ -56,6 +57,7 @@ public class SearchForDocuments {
 		ApiDocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest("", extraSearchParams);
 		String nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
 
+		/* go through all search result pages */ 
 		while (nextLink != null) {
 			System.out.println("at page: " + paginatedDocs.getPageNumber());
 			System.out.println("next link: " + nextLink);
@@ -80,7 +82,10 @@ public class SearchForDocuments {
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
 
+		/* search results are paginated, printing only the first page */
 		System.out.printf("Found %d document(s) matching the '%s' query: \n", searchResult.getTotalHits(), searchQuery);
+		System.out.println("Printing first " + searchResult.getDocuments().size() + " document(s).");
+		
 		for (ApiDocumentInfo doc : searchResult.getDocuments()) {
 			printOutDocDetails(doc);
 		}
@@ -103,8 +108,10 @@ public class SearchForDocuments {
 		ApiConnector apiConnector = new ApiConnector();
 		ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
 
+		/* search results are paginated, printing only the first page */
 		System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
 				searchResult.getTotalHits(), searchedName, searchedTag);
+		System.out.println("Printing first " + searchResult.getDocuments().size() + " document(s).");
 		for(ApiDocumentInfo apiDocInfo : searchResult.getDocuments()) {
 			printOutDocDetails(apiDocInfo);
 		}

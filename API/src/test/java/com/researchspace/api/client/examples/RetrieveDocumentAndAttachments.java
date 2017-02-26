@@ -17,9 +17,10 @@ import com.researchspace.api.client.model.ApiField;
 import com.researchspace.api.client.model.ApiFile;
 
 /** 
- * TODO: a test that retrieves full document and prints its content
+ * Example code that retrieves a document, it's content (in json or cvs format)
+ * and files attached to document's text fields.
  */
-public class RetrieveDocumentContent {
+public class RetrieveDocumentAndAttachments {
 	
 	/** ID of an example document stored on API Test User account on RSpace Community. */
 	private static final long TEST_DOC_ID = 90316;
