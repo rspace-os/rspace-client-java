@@ -37,18 +37,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiLinkItem {
-	
-	public static final String NEXT_REL = "next";
-	public static final String PREV_REL = "prev";
-	public static final String FIRST_REL = "first";
-	public static final String LAST_REL = "last";
-	public static final String SELF_REL = "self";
-	public static final String ENCLOSURE_REL = "enclosure";
-	
-	@JsonProperty("link")
-	private String link = null;
+    
+    public static final String NEXT_REL = "next";
+    public static final String PREV_REL = "prev";
+    public static final String FIRST_REL = "first";
+    public static final String LAST_REL = "last";
+    public static final String SELF_REL = "self";
+    public static final String ENCLOSURE_REL = "enclosure";
+    
+    @JsonProperty("link")
+    private String link = null;
 
-	@JsonProperty("rel")
-	private String rel = null;
+    @JsonProperty("rel")
+    private String rel = null;
 
 }

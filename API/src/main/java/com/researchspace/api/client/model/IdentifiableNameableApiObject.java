@@ -8,14 +8,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public abstract class IdentifiableNameableApiObject extends LinkableApiObject {
-	
-	@JsonProperty("id")
-	private Long id = null;
-	
-	@JsonProperty("globalId")
-	private String globalId = null;
-	
-	@JsonProperty("name")
-	private String name = null;
+    
+    @JsonProperty("id")
+    private Long id = null;
+    
+    @JsonProperty("globalId")
+    private String globalId = null;
+    
+    @JsonProperty("name")
+    private String name = null;
 
 }

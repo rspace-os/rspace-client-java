@@ -46,53 +46,53 @@ import lombok.ToString;
 @JsonPropertyOrder(value={"id", "globalId", "name", "lastModified", "type",  "content", "files", "_links"})
 public class ApiField extends IdentifiableNameableApiObject {
 
-	@JsonProperty("type")
-	private TypeEnum type = null;
+    @JsonProperty("type")
+    private TypeEnum type = null;
 
-	@JsonProperty("content")
-	private String content = null;
+    @JsonProperty("content")
+    private String content = null;
 
-	@JsonProperty("lastModified")
-	private Date lastModified = null;
+    @JsonProperty("lastModified")
+    private Date lastModified = null;
 
-	@JsonProperty("files")
-	private List<ApiFile> files = new ArrayList<>();
+    @JsonProperty("files")
+    private List<ApiFile> files = new ArrayList<>();
 
-	/**
-	 * The data type of this field
-	 */
-	public enum TypeEnum {
-		@JsonProperty("string")
-		STRING("string"),
+    /**
+     * The data type of this field
+     */
+    public enum TypeEnum {
+        @JsonProperty("string")
+        STRING("string"),
 
-		@JsonProperty("text")
-		TEXT("text"),
+        @JsonProperty("text")
+        TEXT("text"),
 
-		@JsonProperty("choice")
-		CHOICE("choice"),
+        @JsonProperty("choice")
+        CHOICE("choice"),
 
-		@JsonProperty("radio")
-		RADIO("radio"),
+        @JsonProperty("radio")
+        RADIO("radio"),
 
-		@JsonProperty("date")
-		DATE("date"),
+        @JsonProperty("date")
+        DATE("date"),
 
-		@JsonProperty("number")
-		NUMBER("number"),
+        @JsonProperty("number")
+        NUMBER("number"),
 
-		@JsonProperty("time")
-		TIME("time");
+        @JsonProperty("time")
+        TIME("time");
 
-		private String value;
+        private String value;
 
-		TypeEnum(String value) {
-			this.value = value;
-		}
+        TypeEnum(String value) {
+            this.value = value;
+        }
 
-		@Override
-		public String toString() {
-			return String.valueOf(value);
-		}
-	}
-	
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+    }
+    
 }

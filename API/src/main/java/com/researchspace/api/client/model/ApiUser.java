@@ -39,20 +39,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonPropertyOrder(value={"id", "username", "email", "firstName", "lastName"})
 public class ApiUser {
-	
-	@JsonProperty("id")
-	private Long id = null;
+    
+    @JsonProperty("id")
+    private Long id = null;
 
-	@JsonProperty("username")
-	private String username = null;
+    @JsonProperty("username")
+    private String username = null;
 
-	@JsonProperty("email")
-	private String email = null;
+    @JsonProperty("email")
+    private String email = null;
 
-	@JsonProperty("firstName")
-	private String firstName = null;
+    @JsonProperty("firstName")
+    private String firstName = null;
 
-	@JsonProperty("lastName")
-	private String lastName = null;
+    @JsonProperty("lastName")
+    private String lastName = null;
 
 }

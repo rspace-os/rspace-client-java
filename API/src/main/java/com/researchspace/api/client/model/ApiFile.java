@@ -40,10 +40,10 @@ import lombok.NoArgsConstructor;
 @JsonPropertyOrder(value={"id", "globalId", "name", "contentType", "size", "_links"})
 public class ApiFile extends IdentifiableNameableApiObject {
 
-	@JsonProperty("contentType")
-	private String contentType = null;
+    @JsonProperty("contentType")
+    private String contentType = null;
 
-	@JsonProperty("size")
-	private Long size = null;
-	
+    @JsonProperty("size")
+    private Long size = null;
+    
 }

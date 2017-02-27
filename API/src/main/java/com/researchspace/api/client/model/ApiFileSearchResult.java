@@ -40,7 +40,7 @@ import lombok.EqualsAndHashCode;
 @JsonPropertyOrder({"totalHits", "pageNumber", "files", "_links"})
 public class ApiFileSearchResult extends ApiPaginatedResultList {
 
-	@JsonProperty("files")
-	private List<ApiFile> files = null;
+    @JsonProperty("files")
+    private List<ApiFile> files = null;
 
 }

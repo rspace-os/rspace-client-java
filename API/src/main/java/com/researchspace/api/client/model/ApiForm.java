@@ -40,10 +40,10 @@ import lombok.NoArgsConstructor;
 @JsonPropertyOrder(value={"id", "globalId","name", "stableId", "version"})
 public class ApiForm extends  IdentifiableNameableApiObject {
 
-	@JsonProperty("stableId")
-	private String stableId = null;
+    @JsonProperty("stableId")
+    private String stableId = null;
 
-	@JsonProperty("version")
-	private Integer version = null;
+    @JsonProperty("version")
+    private Integer version = null;
 
 }

@@ -40,25 +40,25 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 @JsonPropertyOrder(value={"id", "globalId", "name", "created", "lastModified", "signed", "tags",
-		"form", "owner", "_links"})
+        "form", "owner", "_links"})
 public class ApiDocumentInfo extends IdentifiableNameableApiObject {
 
-	@JsonProperty("created")
-	private Date created = null;
-	
-	@JsonProperty("lastModified")
-	private Date lastModified = null;
+    @JsonProperty("created")
+    private Date created = null;
+    
+    @JsonProperty("lastModified")
+    private Date lastModified = null;
 
-	@JsonProperty("signed")
-	private Boolean signed = null;
+    @JsonProperty("signed")
+    private Boolean signed = null;
 
-	@JsonProperty("tags")
-	private String tags = null;
+    @JsonProperty("tags")
+    private String tags = null;
 
-	@JsonProperty("form")
-	private ApiForm form = null;
+    @JsonProperty("form")
+    private ApiForm form = null;
 
-	@JsonProperty("owner")
-	private ApiUser owner = null;
+    @JsonProperty("owner")
+    private ApiUser owner = null;
 
 }

@@ -35,11 +35,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=true)
 public abstract class ApiPaginatedResultList extends LinkableApiObject {
-	
-	@JsonProperty("totalHits")
-	private Long totalHits = null;
+    
+    @JsonProperty("totalHits")
+    private Long totalHits = null;
 
-	@JsonProperty("pageNumber")
-	private Integer pageNumber = null;
+    @JsonProperty("pageNumber")
+    private Integer pageNumber = null;
 
 }

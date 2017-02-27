@@ -39,8 +39,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=true)
 @JsonPropertyOrder({"totalHits", "pageNumber", "documents", "_links"})
 public class ApiDocumentSearchResult extends ApiPaginatedResultList {
-	
-	@JsonProperty("documents")
-	private List<ApiDocumentInfo> documents = null;
+    
+    @JsonProperty("documents")
+    private List<ApiDocumentInfo> documents = null;
 
 }

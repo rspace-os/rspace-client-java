@@ -5,53 +5,53 @@ package com.researchspace.api.client;
  * operand, queries and query types
  */
 public class AdvancedQuery {
-	
-	public static final String OPERATOR_AND = "and";
-	public static final String OPERATOR_OR = "or";
+    
+    public static final String OPERATOR_AND = "and";
+    public static final String OPERATOR_OR = "or";
 
-	private String operator = OPERATOR_AND;
-	private AdvancedQueryElem queries[];
+    private String operator = OPERATOR_AND;
+    private AdvancedQueryElem queries[];
 
-	/** constructor for setting multiple query terms and operand */
-	public AdvancedQuery (String operator, AdvancedQueryElem... queries){
-		this.operator = operator;
-		this.queries = queries;
-	}
-	
-	/** constructor for setting multiple query terms with default operand */
-	public AdvancedQuery (AdvancedQueryElem... queries){
-		this(OPERATOR_AND, queries);
-	}
-	
-	protected String toJSON() {
-		String queryJSON = "";
-		String queryTerms[] = new String[queries.length];
-		
-		// format individual queries into JSON
-		for (int i = 0; i < queries.length; i++) {
-			queryTerms[i] = "{\"query\": \"" + queries[i].getQuery() 
-					+ "\", \"queryType\": \"" + queries[i].getQueryType() 
-					+ "\" }";
-		}
-		
-		// add commas between multiple queries
-		for (int i = 0; i < queryTerms.length - 1; i++) {
-			queryTerms[i] = queryTerms[i] + ", ";
-			queryJSON = queryJSON + queryTerms[i];
-		}
-		queryJSON = queryJSON + queryTerms[queryTerms.length-1];
-		
-		// finally add square brackets
-		queryJSON = "\"terms\": [ " + queryJSON + " ]";
-		
-		// add operand if it is valid
-		if (queryTerms.length > 1 && (operator.equals("and") || operator.equals("or"))) {
-			queryJSON = "{ \"operator\": \"" + operator + "\", " + queryJSON + " }";
-		} else {
-			queryJSON = "{ " + queryJSON + " }";
-		}
+    /** constructor for setting multiple query terms and operand */
+    public AdvancedQuery (String operator, AdvancedQueryElem... queries){
+        this.operator = operator;
+        this.queries = queries;
+    }
+    
+    /** constructor for setting multiple query terms with default operand */
+    public AdvancedQuery (AdvancedQueryElem... queries){
+        this(OPERATOR_AND, queries);
+    }
+    
+    protected String toJSON() {
+        String queryJSON = "";
+        String queryTerms[] = new String[queries.length];
+        
+        // format individual queries into JSON
+        for (int i = 0; i < queries.length; i++) {
+            queryTerms[i] = "{\"query\": \"" + queries[i].getQuery() 
+                    + "\", \"queryType\": \"" + queries[i].getQueryType() 
+                    + "\" }";
+        }
+        
+        // add commas between multiple queries
+        for (int i = 0; i < queryTerms.length - 1; i++) {
+            queryTerms[i] = queryTerms[i] + ", ";
+            queryJSON = queryJSON + queryTerms[i];
+        }
+        queryJSON = queryJSON + queryTerms[queryTerms.length-1];
+        
+        // finally add square brackets
+        queryJSON = "\"terms\": [ " + queryJSON + " ]";
+        
+        // add operand if it is valid
+        if (queryTerms.length > 1 && (operator.equals("and") || operator.equals("or"))) {
+            queryJSON = "{ \"operator\": \"" + operator + "\", " + queryJSON + " }";
+        } else {
+            queryJSON = "{ " + queryJSON + " }";
+        }
 
-		return queryJSON;
-	}
+        return queryJSON;
+    }
 
 }

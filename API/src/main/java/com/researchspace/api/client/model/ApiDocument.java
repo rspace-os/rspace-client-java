@@ -41,10 +41,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 @JsonPropertyOrder(value={"id", "globalId", "name", "created", "lastModified", "signed", "tags", 
-		"form", "owner", "fields", "_links"})
+        "form", "owner", "fields", "_links"})
 public class ApiDocument extends ApiDocumentInfo {
 
-	@JsonProperty("fields")
-	private List<ApiField> fields = new ArrayList<>();
-	
+    @JsonProperty("fields")
+    private List<ApiField> fields = new ArrayList<>();
+    
 }
