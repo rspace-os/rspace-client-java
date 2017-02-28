@@ -37,12 +37,12 @@ If these limits are exceeded, you will receive a 429 TOO\_MANY\_REQUESTS error r
 
 You can set custom usage limits for your RSpace installation using the following deploymen properties. Any properties not set will remain as defaults.
 
-**api.user.limit.day** Maximum requests per user per day
-**api.user.limit.hour** Maximum requests per user per hour
-**api.user.limit.15s** Maximum requests per user per 15s
-**api.user.minInterval** Minimum interval between requests
+* **api.user.limit.day** Maximum requests per user per day
+* **api.user.limit.hour** Maximum requests per user per hour
+* **api.user.limit.15s** Maximum requests per user per 15s
+* **api.user.minInterval** Minimum interval between requests
 
-**api.global.limit.day** Maximum total requests per day
-**api.global.limit.hour** Maximum total requests per day
-**api.global.limit.15s** Maximum total requests per day
-**api.global.minInterval** Maximum total requests per day
+* **api.global.limit.day** Maximum total requests per day
+* **api.global.limit.hour** Maximum total requests per hour
+* **api.global.limit.15s** Maximum total requests per 15s
+* **api.global.minInterval** Minimum interval between requests
