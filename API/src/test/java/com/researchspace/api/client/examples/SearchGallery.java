@@ -13,7 +13,7 @@ import com.researchspace.api.client.model.ApiFileSearchResult;
  * Example code that lists files uploaded to the Gallery. 
  * That includes documents exported to Word/PDF. 
  */
-public class SearchGallery {
+public class SearchGallery extends FixedIntervalTest {
 
     /**
      * Prints files from user's Gallery.
@@ -21,7 +21,7 @@ public class SearchGallery {
     @Test
     public void printPageOfGalleryItems() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = new ApiConnector();
+        ApiConnector apiConnector = createApiConnector();
         ApiFileSearchResult galleryImages = apiConnector.makeFileSearchRequest("", null);
 
         /* search results are paginated, printing only the first page */

@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.researchspace.api.client.AdvancedQuery;
 import com.researchspace.api.client.AdvancedQueryElem;
 import com.researchspace.api.client.ApiConnector;
+import com.researchspace.api.client.ApiConnectorImpl;
 import com.researchspace.api.client.model.ApiDocumentInfo;
 import com.researchspace.api.client.model.ApiDocumentSearchResult;
 import com.researchspace.api.client.model.ApiLinkItem;
@@ -18,7 +19,7 @@ import com.researchspace.api.client.model.ApiLinkItem;
  * Example code that finds documents using various criteria and search types,
  * also demonstrates how to navigate paginated results returned by the API.
  */
-public class FindDocuments {
+public class FindDocuments  extends FixedIntervalTest {
 
     /**
      * Prints 20 last modified documents that user has access to.
@@ -27,7 +28,7 @@ public class FindDocuments {
     @Test
     public void printRecentlyUpdatedDocs() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = new ApiConnector();
+        ApiConnector apiConnector = createApiConnector();
         ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
 
         /* search results are paginated, printing only the first page */
@@ -48,7 +49,7 @@ public class FindDocuments {
     @Test
     public void printAllUserDocs() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = new ApiConnector();
+        ApiConnector apiConnector = createApiConnector();
 
         /* get all documents, sort by creation date in ascending order */
         Map<String, String> extraSearchParams = new HashMap<>();
@@ -79,7 +80,7 @@ public class FindDocuments {
     public void simpleSearch() throws IOException, URISyntaxException {
 
         String searchQuery = "api*";
-        ApiConnector apiConnector = new ApiConnector();
+        ApiConnector apiConnector =createApiConnector();
         ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
 
         /* search results are paginated, printing only the first page */
@@ -105,7 +106,7 @@ public class FindDocuments {
         AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
         AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
 
-        ApiConnector apiConnector = new ApiConnector();
+        ApiConnector apiConnector = createApiConnector();
         ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
 
         /* search results are paginated, printing only the first page */
