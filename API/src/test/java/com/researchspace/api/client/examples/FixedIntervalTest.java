@@ -14,7 +14,7 @@ public abstract class FixedIntervalTest {
 	 ApiConnector createApiConnector() throws IOException {
 		ApiConnectorImpl apiConnector = new ApiConnectorImpl();
 		return (ApiConnector)Proxy
-                .newProxyInstance(RetrieveDocumentAndAttachments.class.getClassLoader(),
+                .newProxyInstance(FixedIntervalTest.class.getClassLoader(),
                 		apiConnector.getClass().getInterfaces(), new DelayAPIExecutor<ApiConnectorImpl>(apiConnector));
 	}
 	

@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.ApiConnectorImpl;
 import com.researchspace.api.client.model.ApiDocument;
 import com.researchspace.api.client.model.ApiField;
 import com.researchspace.api.client.model.ApiFile;
@@ -25,10 +20,10 @@ import com.researchspace.api.client.model.ApiFile;
  * Example code that retrieves a document, it's content (in json or cvs format)
  * and files attached to document's text fields.
  */
-public class RetrieveDocumentAndAttachments  extends FixedIntervalTest {
+public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     
     /** ID of an example document stored on API Test User account on RSpace Community. */
-    private static final long TEST_DOC_ID = 1117;
+    private static final long TEST_DOC_ID = 90316;
 
     /** 
      * Retrieve document and print its content.
@@ -61,7 +56,6 @@ public class RetrieveDocumentAndAttachments  extends FixedIntervalTest {
         System.out.printf("Document %d saved into file '%s'. \n", TEST_DOC_ID, outputFileName);
     }
 
-	
     /**
      * Save document's attachments. 
      */
