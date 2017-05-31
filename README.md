@@ -9,8 +9,10 @@ The examples are written as JUnit tests, and can be run without any extra setup.
 To run the unit tests from the command line:
 
     > cd API
-    > ./gradle clean test
+    > ./gradlew clean test
 
 To run the examples for a different user, or different RSpace server, update the [config.properties](https://github.com/rspace-os/rspace-client-java/blob/master/API/config.properties) file. To enable API access for a particular user you need to 'Regenerate API key' at your RSpace profile page.
 
 Minumum version of RSpace required: 1.41
+Minumum version of Java required: 1.8
+Minumum version of Gradle required: 2.12 (running ./gradlew should install a valid version)
