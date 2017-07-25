@@ -186,14 +186,18 @@ public class ApiConnectorImpl implements ApiConnector {
     }
     
     /* returns property value from config file */
-    protected String getConfigProperty(String propertyName) throws IOException {
+    protected String getConfigProperty(String propertyName) {
         Properties prop = new Properties();
         String propertyValue = "";
     
-        try (InputStream input = new FileInputStream(CONFIG_PROPERTIES_FILENAME)) {
+        try (InputStream input = new FileInputStream("config.properties")) {
             prop.load(input);
             propertyValue = prop.getProperty(propertyName);
-        }
+        } catch ( IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new IllegalArgumentException(String.format("Property %s not found", propertyName));
+		}
         return propertyValue;
     }
 

@@ -22,8 +22,10 @@ import com.researchspace.api.clientmodel.Field;
  */
 public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     
-    /** ID of an example document stored on  Test User account on RSpace Community. */
-    private static final long TEST_DOC_ID = 90316;
+   long  getTestDocId (){
+	   return Long.parseLong(getConfigProperty("testDocId"));
+	   
+   }
 
     /** 
      * Retrieve document and print its content.
@@ -32,7 +34,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void printDocumentsContent() throws IOException, URISyntaxException {
         
         ApiConnector ApiConnector = createApiConnector();
-        Document document = ApiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        Document document = ApiConnector.makeSingleDocumentRequest(getTestDocId ());
         
         System.out.printf("Printing content of '%s' (globalId: %s).\n", document.getName(), document.getGlobalId());
         for (Field field : document.getFields()) {
@@ -47,13 +49,13 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentInCsvFormat() throws IOException, URISyntaxException {
         
         ApiConnector ApiConnector = createApiConnector();
-        String contentAsCsv = ApiConnector.makeSingleCSVDocumentRequest(TEST_DOC_ID);
+        String contentAsCsv = ApiConnector.makeSingleCSVDocumentRequest(getTestDocId ());
         
-        String outputFileName = TEST_DOC_ID + ".csv";
+        String outputFileName = getTestDocId () + ".csv";
         try (PrintWriter out = new PrintWriter(outputFileName)) {
             out.println(contentAsCsv);
         }
-        System.out.printf("Document %d saved into file '%s'. \n", TEST_DOC_ID, outputFileName);
+        System.out.printf("Document %d saved into file '%s'. \n", getTestDocId (), outputFileName);
     }
 
     /**
@@ -63,7 +65,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentsAttachments() throws URISyntaxException, IOException {
         
         ApiConnector ApiConnector = createApiConnector();
-        Document document = ApiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        Document document = ApiConnector.makeSingleDocumentRequest(getTestDocId ());
 
         List<Field> fields = document.getFields();
         List<ApiFile> attachments = new ArrayList<>();

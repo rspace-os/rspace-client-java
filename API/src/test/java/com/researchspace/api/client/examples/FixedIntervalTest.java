@@ -1,10 +1,14 @@
 package com.researchspace.api.client.examples;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Properties;
 
 import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.ApiConnectorImpl;
@@ -35,5 +39,21 @@ public abstract class FixedIntervalTest {
 				}
 			}
 		}
+	 
+	 /* returns property value from config file */
+	    protected String getConfigProperty(String propertyName) {
+	        Properties prop = new Properties();
+	        String propertyValue = "";
+	    
+	        try (InputStream input = new FileInputStream("config.properties")) {
+	            prop.load(input);
+	            propertyValue = prop.getProperty(propertyName);
+	        } catch ( IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new IllegalArgumentException(String.format("Property %s not found", propertyName));
+			}
+	        return propertyValue;
+	    }
 
 }
