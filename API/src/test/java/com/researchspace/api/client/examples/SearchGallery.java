@@ -6,8 +6,8 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.model.ApiFile;
-import com.researchspace.api.client.model.ApiFileSearchResult;
+import com.researchspace.api.clientmodel.ApiFile;
+import com.researchspace.api.clientmodel.FileSearchResult;
 
 /** 
  * Example code that lists files uploaded to the Gallery. 
@@ -22,7 +22,7 @@ public class SearchGallery extends FixedIntervalTest {
     public void printPageOfGalleryItems() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        ApiFileSearchResult galleryImages = apiConnector.makeFileSearchRequest("", null);
+        FileSearchResult galleryImages = apiConnector.makeFileSearchRequest("", null);
 
         /* search results are paginated, printing only the first page */
         System.out.println("User has " + galleryImages.getTotalHits() + " file(s) in their Gallery.");

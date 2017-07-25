@@ -12,9 +12,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.model.ApiDocument;
-import com.researchspace.api.client.model.ApiField;
-import com.researchspace.api.client.model.ApiFile;
+import com.researchspace.api.clientmodel.ApiFile;
+import com.researchspace.api.clientmodel.Document;
+import com.researchspace.api.clientmodel.Field;
 
 /** 
  * Example code that retrieves a document, it's content (in json or cvs format)
@@ -22,7 +22,7 @@ import com.researchspace.api.client.model.ApiFile;
  */
 public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     
-    /** ID of an example document stored on API Test User account on RSpace Community. */
+    /** ID of an example document stored on  Test User account on RSpace Community. */
     private static final long TEST_DOC_ID = 90316;
 
     /** 
@@ -31,11 +31,11 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     @Test
     public void printDocumentsContent() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = createApiConnector();
-        ApiDocument document = apiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        ApiConnector ApiConnector = createApiConnector();
+        Document document = ApiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
         
         System.out.printf("Printing content of '%s' (globalId: %s).\n", document.getName(), document.getGlobalId());
-        for (ApiField field : document.getFields()) {
+        for (Field field : document.getFields()) {
             System.out.println(field.getName() + ": " + field.getContent());
         }
     }
@@ -46,8 +46,8 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     @Test
     public void saveDocumentInCsvFormat() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = createApiConnector();
-        String contentAsCsv = apiConnector.makeSingleCSVDocumentRequest(TEST_DOC_ID);
+        ApiConnector ApiConnector = createApiConnector();
+        String contentAsCsv = ApiConnector.makeSingleCSVDocumentRequest(TEST_DOC_ID);
         
         String outputFileName = TEST_DOC_ID + ".csv";
         try (PrintWriter out = new PrintWriter(outputFileName)) {
@@ -62,23 +62,23 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     @Test
     public void saveDocumentsAttachments() throws URISyntaxException, IOException {
         
-        ApiConnector apiConnector = createApiConnector();
-        ApiDocument document = apiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        ApiConnector ApiConnector = createApiConnector();
+        Document document = ApiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
 
-        List<ApiField> fields = document.getFields();
+        List<Field> fields = document.getFields();
         List<ApiFile> attachments = new ArrayList<>();
-        for (ApiField f : fields) {
+        for (Field f : fields) {
             attachments.addAll(f.getFiles());
         }
 
         System.out.printf("Retrieved document '%s' (globalId: %s), which contains %d attachment(s).\n",
                 document.getName(), document.getGlobalId(), attachments.size());
         
-        for (ApiFile apiFile : attachments) {
-            InputStream content = apiConnector.makeFileDataRequest(apiFile);
-            File file = new File(apiFile.getName());
+        for (ApiFile File : attachments) {
+            InputStream content = ApiConnector.makeFileDataRequest(File);
+            File file = new File(File.getName());
             FileUtils.copyInputStreamToFile(content, file);
-            System.out.println("Saved attachment: " + apiFile.getName());
+            System.out.println("Saved attachment: " + File.getName());
         }
     }
 

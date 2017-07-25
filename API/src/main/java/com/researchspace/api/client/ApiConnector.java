@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import com.researchspace.api.client.model.ApiDocument;
-import com.researchspace.api.client.model.ApiDocumentSearchResult;
-import com.researchspace.api.client.model.ApiFile;
-import com.researchspace.api.client.model.ApiFileSearchResult;
+import com.researchspace.api.clientmodel.ApiFile;
+import com.researchspace.api.clientmodel.Document;
+import com.researchspace.api.clientmodel.DocumentSearchResult;
+import com.researchspace.api.clientmodel.FileSearchResult;
 
 public interface ApiConnector {
 
@@ -20,7 +20,7 @@ public interface ApiConnector {
 	 * @returns a page of search results, paginated and order according to the search parameters
 	 *         (by default: 20 results per page, "last modified desc" order)
 	 */
-	ApiDocumentSearchResult makeDocumentSearchRequest(String searchQuery, Map<String, String> searchParams)
+	DocumentSearchResult makeDocumentSearchRequest(String searchQuery, Map<String, String> searchParams)
 			throws URISyntaxException, IOException;
 
 	/** 
@@ -32,13 +32,13 @@ public interface ApiConnector {
 	 * @returns a page of search results, paginated and order according to the search parameters
 	 *         (by default: 20 results per page, "last modified desc" order) 
 	 */
-	ApiDocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery, Map<String, String> searchParams)
+	DocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery, Map<String, String> searchParams)
 			throws URISyntaxException, IOException;
 
 	/**
 	 * Returns representation of a single document (with fields).
 	 */
-	ApiDocument makeSingleDocumentRequest(long docID) throws IOException;
+	Document makeSingleDocumentRequest(long docID) throws IOException;
 
 	/** 
 	 * Returns content of a single document in CSV format 
@@ -51,7 +51,7 @@ public interface ApiConnector {
 	/** returns input stream to file data */
 	InputStream makeFileDataRequest(ApiFile apiFile) throws IOException;
 
-	ApiFileSearchResult makeFileSearchRequest(String mediaType, Map<String, String> searchParams)
+	FileSearchResult makeFileSearchRequest(String mediaType, Map<String, String> searchParams)
 			throws URISyntaxException, IOException;
 
 }

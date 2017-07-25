@@ -10,14 +10,15 @@ import org.junit.Test;
 import com.researchspace.api.client.AdvancedQuery;
 import com.researchspace.api.client.AdvancedQueryElem;
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.ApiConnectorImpl;
-import com.researchspace.api.client.model.ApiDocumentInfo;
-import com.researchspace.api.client.model.ApiDocumentSearchResult;
-import com.researchspace.api.client.model.ApiLinkItem;
+import com.researchspace.api.clientmodel.DocumentInfo;
+import com.researchspace.api.clientmodel.DocumentSearchResult;
+import com.researchspace.api.clientmodel.LinkItem;
+
+
 
 /** 
  * Example code that finds documents using various criteria and search types,
- * also demonstrates how to navigate paginated results returned by the API.
+ * also demonstrates how to navigate paginated results returned by the .
  */
 public class FindDocuments  extends FixedIntervalTest {
 
@@ -28,15 +29,15 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void printRecentlyUpdatedDocs() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = createApiConnector();
-        ApiDocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
+        ApiConnector ApiConnector = createApiConnector();
+        DocumentSearchResult allDocs = ApiConnector.makeDocumentSearchRequest("", null);
 
         /* search results are paginated, printing only the first page */
         System.out.println("User has " + allDocs.getTotalHits() + " document(s) in their Workspace.");
         System.out.println("Printing first " + allDocs.getDocuments().size() + " document(s).");
         
-        for(ApiDocumentInfo apiDocInfo : allDocs.getDocuments()) {
-            printOutDocDetails(apiDocInfo);
+        for(DocumentInfo DocInfo : allDocs.getDocuments()) {
+            printOutDocDetails(DocInfo);
         }
     }
 
@@ -49,26 +50,26 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void printAllUserDocs() throws IOException, URISyntaxException {
         
-        ApiConnector apiConnector = createApiConnector();
+        ApiConnector ApiConnector = createApiConnector();
 
         /* get all documents, sort by creation date in ascending order */
         Map<String, String> extraSearchParams = new HashMap<>();
         extraSearchParams.put("orderBy", "created asc");
 
-        ApiDocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest("", extraSearchParams);
-        String nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
+        DocumentSearchResult paginatedDocs = ApiConnector.makeDocumentSearchRequest("", extraSearchParams);
+        String nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
 
         /* go through all search result pages */ 
         while (nextLink != null) {
             System.out.println("at page: " + paginatedDocs.getPageNumber());
             System.out.println("next link: " + nextLink);
 
-            for (ApiDocumentInfo doc : paginatedDocs.getDocuments()) {
+            for (DocumentInfo doc : paginatedDocs.getDocuments()) {
                 printOutDocDetails(doc);
             }
-            nextLink = paginatedDocs.getLinkByType(ApiLinkItem.NEXT_REL);
+            nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
             if (nextLink != null) {
-                paginatedDocs = apiConnector.makeLinkedObjectRequest(nextLink, ApiDocumentSearchResult.class);
+                paginatedDocs = ApiConnector.makeLinkedObjectRequest(nextLink, DocumentSearchResult.class);
             }
         } 
     }
@@ -79,15 +80,15 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void simpleSearch() throws IOException, URISyntaxException {
 
-        String searchQuery = "api*";
-        ApiConnector apiConnector =createApiConnector();
-        ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
+        String searchQuery = "*";
+        ApiConnector ApiConnector =createApiConnector();
+        DocumentSearchResult searchResult = ApiConnector.makeDocumentSearchRequest(searchQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %d document(s) matching the '%s' query: \n", searchResult.getTotalHits(), searchQuery);
         System.out.println("Printing first " + searchResult.getDocuments().size() + " document(s).");
         
-        for (ApiDocumentInfo doc : searchResult.getDocuments()) {
+        for (DocumentInfo doc : searchResult.getDocuments()) {
             printOutDocDetails(doc);
         }
     }
@@ -100,25 +101,25 @@ public class FindDocuments  extends FixedIntervalTest {
 
         /** search terms */
         String searchedName = "doc*";
-        String searchedTag = "apiSearchTag";
+        String searchedTag = "SearchTag";
         
         AdvancedQueryElem nameSearchTerm = new AdvancedQueryElem(searchedName, "name");
         AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
         AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
 
-        ApiConnector apiConnector = createApiConnector();
-        ApiDocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
+        ApiConnector ApiConnector = createApiConnector();
+        DocumentSearchResult searchResult = ApiConnector.makeDocumentSearchRequest(advQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
                 searchResult.getTotalHits(), searchedName, searchedTag);
         System.out.println("Printing first " + searchResult.getDocuments().size() + " document(s).");
-        for(ApiDocumentInfo apiDocInfo : searchResult.getDocuments()) {
-            printOutDocDetails(apiDocInfo);
+        for(DocumentInfo DocInfo : searchResult.getDocuments()) {
+            printOutDocDetails(DocInfo);
         }
     }
     
-    private void printOutDocDetails(ApiDocumentInfo docInfo) {
+    private void printOutDocDetails(DocumentInfo docInfo) {
         String details = String.format("Document: %s, form: %s, globalId: %s, createdAt: %s, lastModified: %s", 
                 docInfo.getName(), docInfo.getForm().getName(), docInfo.getGlobalId(), docInfo.getCreated(), 
                 docInfo.getLastModified());
