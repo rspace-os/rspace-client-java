@@ -16,6 +16,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
@@ -101,6 +102,8 @@ public class ApiConnectorImpl implements ApiConnector {
 	private ObjectMapper createObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
+		mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
 		return mapper;
 	}
 

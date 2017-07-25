@@ -80,7 +80,7 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void simpleSearch() throws IOException, URISyntaxException {
 
-        String searchQuery = "*";
+        String searchQuery = "api*";
         ApiConnector ApiConnector =createApiConnector();
         DocumentSearchResult searchResult = ApiConnector.makeDocumentSearchRequest(searchQuery, null);
 
