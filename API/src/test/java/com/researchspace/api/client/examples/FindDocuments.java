@@ -29,8 +29,8 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void printRecentlyUpdatedDocs() throws IOException, URISyntaxException {
         
-        ApiConnector ApiConnector = createApiConnector();
-        DocumentSearchResult allDocs = ApiConnector.makeDocumentSearchRequest("", null);
+        ApiConnector apiConnector = createApiConnector();
+        DocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
 
         /* search results are paginated, printing only the first page */
         System.out.println("User has " + allDocs.getTotalHits() + " document(s) in their Workspace.");
@@ -50,13 +50,13 @@ public class FindDocuments  extends FixedIntervalTest {
     @Test
     public void printAllUserDocs() throws IOException, URISyntaxException {
         
-        ApiConnector ApiConnector = createApiConnector();
+        ApiConnector apiConnector = createApiConnector();
 
         /* get all documents, sort by creation date in ascending order */
         Map<String, String> extraSearchParams = new HashMap<>();
         extraSearchParams.put("orderBy", "created asc");
 
-        DocumentSearchResult paginatedDocs = ApiConnector.makeDocumentSearchRequest("", extraSearchParams);
+        DocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest("", extraSearchParams);
         String nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
 
         /* go through all search result pages */ 
@@ -69,7 +69,7 @@ public class FindDocuments  extends FixedIntervalTest {
             }
             nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
             if (nextLink != null) {
-                paginatedDocs = ApiConnector.makeLinkedObjectRequest(nextLink, DocumentSearchResult.class);
+                paginatedDocs = apiConnector.makeLinkedObjectRequest(nextLink, DocumentSearchResult.class);
             }
         } 
     }
@@ -81,8 +81,8 @@ public class FindDocuments  extends FixedIntervalTest {
     public void simpleSearch() throws IOException, URISyntaxException {
 
         String searchQuery = "api*";
-        ApiConnector ApiConnector =createApiConnector();
-        DocumentSearchResult searchResult = ApiConnector.makeDocumentSearchRequest(searchQuery, null);
+        ApiConnector apiConnector =createApiConnector();
+        DocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %d document(s) matching the '%s' query: \n", searchResult.getTotalHits(), searchQuery);
@@ -107,8 +107,8 @@ public class FindDocuments  extends FixedIntervalTest {
         AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
         AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
 
-        ApiConnector ApiConnector = createApiConnector();
-        DocumentSearchResult searchResult = ApiConnector.makeDocumentSearchRequest(advQuery, null);
+        ApiConnector apiConnector = createApiConnector();
+        DocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
