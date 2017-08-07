@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
+import com.researchspace.api.client.ConfigPropertiesReader;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.Field;
@@ -22,11 +23,8 @@ import com.researchspace.api.clientmodel.Field;
  */
 public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     
-   long  getTestDocId (){
-	   return Long.parseLong(getConfigProperty("testDocId"));
-	   
-   }
-
+    private ConfigPropertiesReader configReader = new ConfigPropertiesReader();
+    
     /** 
      * Retrieve document and print its content.
      */
@@ -34,7 +32,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void printDocumentsContent() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId ());
+        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId());
         
         System.out.printf("Printing content of '%s' (globalId: %s).\n", document.getName(), document.getGlobalId());
         for (Field field : document.getFields()) {
@@ -49,13 +47,13 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentInCsvFormat() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        String contentAsCsv = apiConnector.makeSingleCSVDocumentRequest(getTestDocId ());
+        String contentAsCsv = apiConnector.makeSingleCSVDocumentRequest(getTestDocId());
         
-        String outputFileName = getTestDocId () + ".csv";
+        String outputFileName = getTestDocId() + ".csv";
         try (PrintWriter out = new PrintWriter(outputFileName)) {
             out.println(contentAsCsv);
         }
-        System.out.printf("Document %d saved into file '%s'. \n", getTestDocId (), outputFileName);
+        System.out.printf("Document %d saved into file '%s'. \n", getTestDocId(), outputFileName);
     }
 
     /**
@@ -65,7 +63,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentsAttachments() throws URISyntaxException, IOException {
         
         ApiConnector apiConnector = createApiConnector();
-        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId ());
+        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId());
 
         List<Field> fields = document.getFields();
         List<ApiFile> attachments = new ArrayList<>();
@@ -82,6 +80,10 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
             FileUtils.copyInputStreamToFile(content, file);
             System.out.println("Saved attachment: " + File.getName());
         }
+    }
+    
+    private long getTestDocId() {
+        return Long.parseLong(configReader.getConfigProperty("testDocId"));
     }
 
 }

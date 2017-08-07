@@ -14,13 +14,11 @@ import com.researchspace.api.clientmodel.DocumentInfo;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.LinkItem;
 
-
-
 /** 
  * Example code that finds documents using various criteria and search types,
- * also demonstrates how to navigate paginated results returned by the .
+ * also demonstrates how to navigate paginated results returned by the API.
  */
-public class FindDocuments  extends FixedIntervalTest {
+public class FindDocuments extends FixedIntervalTest {
 
     /**
      * Prints 20 last modified documents that user has access to.

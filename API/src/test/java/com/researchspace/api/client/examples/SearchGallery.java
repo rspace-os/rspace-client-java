@@ -16,7 +16,7 @@ import com.researchspace.api.clientmodel.FileSearchResult;
 public class SearchGallery extends FixedIntervalTest {
 
     /**
-     * Prints files from user's Gallery.
+     * Prints files from User's Gallery.
      */
     @Test
     public void printPageOfGalleryItems() throws IOException, URISyntaxException {

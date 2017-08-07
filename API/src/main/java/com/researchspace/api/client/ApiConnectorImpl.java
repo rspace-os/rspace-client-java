@@ -1,13 +1,11 @@
 package com.researchspace.api.client;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
@@ -32,19 +30,23 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents";
     private static final String API_FILES_ENDPOINT = "/api/v1/files"; 
     
-    private static final String CONFIG_PROPERTIES_FILENAME = "config.properties";
-
     private static final int SOCKET_TIMEOUT = 10000;
     private static final int CONNECT_TIMEOUT = 10000;
 
     private final String serverURL;
     private final String apiKey;
-    
+
     public ApiConnectorImpl() throws IOException {
-        serverURL = getConfigProperty("serverURL");
-        apiKey = getConfigProperty("apiKey");
+        ConfigPropertiesReader configReader = new ConfigPropertiesReader();
+        serverURL = configReader.getConfigProperty("serverURL");
+        apiKey = configReader.getConfigProperty("apiKey");
     }
     
+    public ApiConnectorImpl(String serverUrl, String apiKey) {
+        this.serverURL = serverUrl;
+        this.apiKey = apiKey;
+    }
+
     /* (non-Javadoc)
 	 * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(java.lang.String, java.util.Map)
 	 */
@@ -183,22 +185,6 @@ public class ApiConnectorImpl implements ApiConnector {
 
     protected String getApiFilesUrl() {
         return serverURL + API_FILES_ENDPOINT;
-    }
-    
-    /* returns property value from config file */
-    protected String getConfigProperty(String propertyName) {
-        Properties prop = new Properties();
-        String propertyValue = "";
-    
-        try (InputStream input = new FileInputStream("config.properties")) {
-            prop.load(input);
-            propertyValue = prop.getProperty(propertyName);
-        } catch ( IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new IllegalArgumentException(String.format("Property %s not found", propertyName));
-		}
-        return propertyValue;
     }
 
 }
