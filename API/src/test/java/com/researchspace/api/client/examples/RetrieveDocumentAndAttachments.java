@@ -32,7 +32,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void printDocumentsContent() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId());
+        Document document = apiConnector.retrieveDocument(getTestDocId());
         
         System.out.printf("Printing content of '%s' (globalId: %s).\n", document.getName(), document.getGlobalId());
         for (Field field : document.getFields()) {
@@ -47,7 +47,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentInCsvFormat() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        String contentAsCsv = apiConnector.makeSingleCSVDocumentRequest(getTestDocId());
+        String contentAsCsv = apiConnector.retrieveDocumentAsCSV(getTestDocId());
         
         String outputFileName = getTestDocId() + ".csv";
         try (PrintWriter out = new PrintWriter(outputFileName)) {
@@ -63,7 +63,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentsAttachments() throws URISyntaxException, IOException {
         
         ApiConnector apiConnector = createApiConnector();
-        Document document = apiConnector.makeSingleDocumentRequest(getTestDocId());
+        Document document = apiConnector.retrieveDocument(getTestDocId());
 
         List<Field> fields = document.getFields();
         List<ApiFile> attachments = new ArrayList<>();
@@ -75,7 +75,7 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
                 document.getName(), document.getGlobalId(), attachments.size());
         
         for (ApiFile File : attachments) {
-            InputStream content = apiConnector.makeFileDataRequest(File);
+            InputStream content = apiConnector.retrieveFileData(File);
             File file = new File(File.getName());
             FileUtils.copyInputStreamToFile(content, file);
             System.out.println("Saved attachment: " + File.getName());

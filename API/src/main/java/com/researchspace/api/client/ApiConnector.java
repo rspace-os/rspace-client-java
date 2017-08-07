@@ -20,7 +20,7 @@ public interface ApiConnector {
 	 * @returns a page of search results, paginated and order according to the search parameters
 	 *         (by default: 20 results per page, "last modified desc" order)
 	 */
-	DocumentSearchResult makeDocumentSearchRequest(String searchQuery, Map<String, String> searchParams)
+	DocumentSearchResult searchDocuments(String searchQuery, Map<String, String> searchParams)
 			throws URISyntaxException, IOException;
 
 	/** 
@@ -32,26 +32,44 @@ public interface ApiConnector {
 	 * @returns a page of search results, paginated and order according to the search parameters
 	 *         (by default: 20 results per page, "last modified desc" order) 
 	 */
-	DocumentSearchResult makeDocumentSearchRequest(AdvancedQuery advQuery, Map<String, String> searchParams)
+	DocumentSearchResult searchDocuments(AdvancedQuery advQuery, Map<String, String> searchParams)
 			throws URISyntaxException, IOException;
+
+	/**
+	 * Create new document in RSpace, either "Basic Document" or based on a specific form. 
+	 * @param document to create
+	 * @return created document
+	 */
+    Document createDocument(Document document) throws IOException;
 
 	/**
 	 * Returns representation of a single document (with fields).
 	 */
-	Document makeSingleDocumentRequest(long docID) throws IOException;
+	Document retrieveDocument(long docID) throws IOException;
 
 	/** 
 	 * Returns content of a single document in CSV format 
 	 */
-	String makeSingleCSVDocumentRequest(long docID) throws IOException;
+	String retrieveDocumentAsCSV(long docID) throws IOException;
 
 	/** retrieves the object behind the link */
-	<T> T makeLinkedObjectRequest(String link, Class<T> objectType) throws IOException;
+	<T> T retrieveLinkedObject(String link, Class<T> objectType) throws IOException;
+
+	/**
+     * Update existing RSpace document. 
+     * @param document to create, id field cannot be null
+     * @return updated document
+     */
+    Document updateDocument(Document document) throws IOException;
+
+    /**
+     * Search for Gallery files, based on various criteria. 
+     */
+    FileSearchResult searchFiles(String mediaType, Map<String, String> searchParams)
+            throws URISyntaxException, IOException;
+
 
 	/** returns input stream to file data */
-	InputStream makeFileDataRequest(ApiFile apiFile) throws IOException;
-
-	FileSearchResult makeFileSearchRequest(String mediaType, Map<String, String> searchParams)
-			throws URISyntaxException, IOException;
+	InputStream retrieveFileData(ApiFile apiFile) throws IOException;
 
 }

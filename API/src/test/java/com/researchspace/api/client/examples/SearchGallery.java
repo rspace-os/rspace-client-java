@@ -22,7 +22,7 @@ public class SearchGallery extends FixedIntervalTest {
     public void printPageOfGalleryItems() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        FileSearchResult galleryImages = apiConnector.makeFileSearchRequest("", null);
+        FileSearchResult galleryImages = apiConnector.searchFiles("", null);
 
         /* search results are paginated, printing only the first page */
         System.out.println("User has " + galleryImages.getTotalHits() + " file(s) in their Gallery.");

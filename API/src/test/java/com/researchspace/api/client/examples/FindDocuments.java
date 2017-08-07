@@ -28,7 +28,7 @@ public class FindDocuments extends FixedIntervalTest {
     public void printRecentlyUpdatedDocs() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        DocumentSearchResult allDocs = apiConnector.makeDocumentSearchRequest("", null);
+        DocumentSearchResult allDocs = apiConnector.searchDocuments("", null);
 
         /* search results are paginated, printing only the first page */
         System.out.println("User has " + allDocs.getTotalHits() + " document(s) in their Workspace.");
@@ -54,7 +54,7 @@ public class FindDocuments extends FixedIntervalTest {
         Map<String, String> extraSearchParams = new HashMap<>();
         extraSearchParams.put("orderBy", "created asc");
 
-        DocumentSearchResult paginatedDocs = apiConnector.makeDocumentSearchRequest("", extraSearchParams);
+        DocumentSearchResult paginatedDocs = apiConnector.searchDocuments("", extraSearchParams);
         String nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
 
         /* go through all search result pages */ 
@@ -67,7 +67,7 @@ public class FindDocuments extends FixedIntervalTest {
             }
             nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
             if (nextLink != null) {
-                paginatedDocs = apiConnector.makeLinkedObjectRequest(nextLink, DocumentSearchResult.class);
+                paginatedDocs = apiConnector.retrieveLinkedObject(nextLink, DocumentSearchResult.class);
             }
         } 
     }
@@ -80,7 +80,7 @@ public class FindDocuments extends FixedIntervalTest {
 
         String searchQuery = "api*";
         ApiConnector apiConnector =createApiConnector();
-        DocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(searchQuery, null);
+        DocumentSearchResult searchResult = apiConnector.searchDocuments(searchQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %d document(s) matching the '%s' query: \n", searchResult.getTotalHits(), searchQuery);
@@ -106,7 +106,7 @@ public class FindDocuments extends FixedIntervalTest {
         AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
 
         ApiConnector apiConnector = createApiConnector();
-        DocumentSearchResult searchResult = apiConnector.makeDocumentSearchRequest(advQuery, null);
+        DocumentSearchResult searchResult = apiConnector.searchDocuments(advQuery, null);
 
         /* search results are paginated, printing only the first page */
         System.out.printf("Found %s document(s) with name '%s' or tag '%s': \n", 
