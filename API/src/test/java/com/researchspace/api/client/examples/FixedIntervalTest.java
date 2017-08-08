@@ -8,32 +8,36 @@ import java.lang.reflect.Proxy;
 
 import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.client.ApiConnectorImpl;
+import com.researchspace.api.client.ConfigPropertiesReader;
 
 public abstract class FixedIntervalTest {
 
-	 ApiConnector createApiConnector() throws IOException {
-		ApiConnectorImpl apiConnector = new ApiConnectorImpl();
-		return (ApiConnector)Proxy
-                .newProxyInstance(FixedIntervalTest.class.getClassLoader(),
-                		apiConnector.getClass().getInterfaces(), new DelayAPIExecutor<ApiConnectorImpl>(apiConnector));
-	}
+    protected ConfigPropertiesReader configReader = new ConfigPropertiesReader();
+    
+    protected ApiConnector createApiConnector() throws IOException {
+        ApiConnectorImpl apiConnector = new ApiConnectorImpl();
+        return (ApiConnector) Proxy.newProxyInstance(FixedIntervalTest.class.getClassLoader(),
+                apiConnector.getClass().getInterfaces(),
+                new DelayAPIExecutor<ApiConnectorImpl>(apiConnector));
+    }
 	
-	// proxy object to interpose a delay between requests
-	 class DelayAPIExecutor <T> implements InvocationHandler {
-		private static final int ONE_SECOND = 1000;
-		private T object;
-		public DelayAPIExecutor(T object) {
-			super();
-			this.object = object;
-		}
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			Thread.currentThread().sleep(ONE_SECOND);
-			try {
-				return method.invoke(object, args);
-			} catch (InvocationTargetException e) {
-				throw e.getTargetException();
-			}
-		}
-	}
+    // proxy object to interpose a delay between requests
+    class DelayAPIExecutor<T> implements InvocationHandler {
+        private static final int ONE_SECOND = 1000;
+        private T object;
+
+        public DelayAPIExecutor(T object) {
+            this.object = object;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Thread.currentThread().sleep(ONE_SECOND);
+            try {
+                return method.invoke(object, args);
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
+            }
+        }
+    }
 
 }

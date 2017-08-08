@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +23,7 @@ import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.Field;
+import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
 import com.researchspace.api.clientmodel.LinkItem;
 
@@ -82,7 +85,7 @@ public class ApiConnectorImpl implements ApiConnector {
             searchParams.put("advancedQuery", advQuery.toJSON());
         }
         
-        URIBuilder builder = new URIBuilder(getDocumentsUrl());
+        URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
         for (Entry<String, String> param : searchParams.entrySet()) {
             builder.setParameter(param.getKey(), param.getValue());
         }
@@ -180,6 +183,13 @@ public class ApiConnectorImpl implements ApiConnector {
         return mapper.readValue(docSearchResponse, FileSearchResult.class);
     }
 
+    @Override
+    public ApiFile retrieveFileById(long fileId) throws IOException {
+        String docSearchResponse = makeApiGetRequest(getApiSingleFileUrl(fileId)).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(docSearchResponse, ApiFile.class);
+    }
+
     /* (non-Javadoc)
      * @see com.researchspace.api.client.ApiConnector#makeFileDataRequest(com.researchspace.api.client.model.ApiFile)
      */
@@ -187,6 +197,29 @@ public class ApiConnectorImpl implements ApiConnector {
     public InputStream retrieveFileData(ApiFile apiFile) throws IOException {
         String fileDataLink = apiFile.getLinkByType(LinkItem.ENCLOSURE_REL);
         return makeApiGetRequest(fileDataLink).asStream();
+    }
+
+    @Override
+    public ApiFile uploadFile(FilePost filePost) throws IOException {
+        String fileUploadResponse = makeFileUploadApiRequest(filePost).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(fileUploadResponse, ApiFile.class);
+    }
+
+    private Content makeFileUploadApiRequest(FilePost filePost) throws IOException {
+        HttpEntity fileUploadEntity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody("file", filePost.getFile())
+                .addTextBody("folderId", filePost.getFolderId() == null ? "" : "" + filePost.getFolderId())
+                .addTextBody("caption", filePost.getCaption())
+                .build();
+        Response response = Request.Post(getApiFilesUrl())
+                .addHeader("apiKey", apiKey)
+                .body(fileUploadEntity)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
     }
     
     protected Content makeApiGetRequest(String uriString) throws IOException {
@@ -197,7 +230,7 @@ public class ApiConnectorImpl implements ApiConnector {
         Validate.notNull(document);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
-        Response response = Request.Post(getDocumentsUrl())
+        Response response = Request.Post(getApiDocumentsUrl())
                 .addHeader("apiKey", apiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
                 .connectTimeout(CONNECT_TIMEOUT)
@@ -233,16 +266,20 @@ public class ApiConnectorImpl implements ApiConnector {
         return response.returnContent();
     }
     
-    protected String getDocumentsUrl() {
+    protected String getApiDocumentsUrl() {
         return serverURL + API_DOCUMENTS_ENDPOINT;
     }
 
-    protected String getApiSingleDocumentUrl(long docID) {
-        return getDocumentsUrl() + "/" + docID;
+    protected String getApiSingleDocumentUrl(long docId) {
+        return getApiDocumentsUrl() + "/" + docId;
     }
 
     protected String getApiFilesUrl() {
         return serverURL + API_FILES_ENDPOINT;
+    }
+
+    protected String getApiSingleFileUrl(long fileId) {
+        return getApiFilesUrl() + "/" + fileId;
     }
 
 }

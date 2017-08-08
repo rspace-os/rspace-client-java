@@ -8,6 +8,7 @@ import java.util.Map;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
+import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
 
 public interface ApiConnector {
@@ -68,8 +69,11 @@ public interface ApiConnector {
     FileSearchResult searchFiles(String mediaType, Map<String, String> searchParams)
             throws URISyntaxException, IOException;
 
+    ApiFile retrieveFileById(long fileId) throws IOException;
 
 	/** returns input stream to file data */
 	InputStream retrieveFileData(ApiFile apiFile) throws IOException;
+	
+	ApiFile uploadFile(FilePost file) throws IOException;
 
 }

@@ -12,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.ConfigPropertiesReader;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.Field;
@@ -22,8 +21,6 @@ import com.researchspace.api.clientmodel.Field;
  * and files attached to document's text fields.
  */
 public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
-    
-    private ConfigPropertiesReader configReader = new ConfigPropertiesReader();
     
     /** 
      * Retrieve document and print its content.
