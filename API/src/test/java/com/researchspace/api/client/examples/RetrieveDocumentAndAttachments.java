@@ -12,9 +12,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.model.ApiDocument;
-import com.researchspace.api.client.model.ApiField;
-import com.researchspace.api.client.model.ApiFile;
+import com.researchspace.api.clientmodel.ApiFile;
+import com.researchspace.api.clientmodel.Document;
+import com.researchspace.api.clientmodel.Field;
 
 /** 
  * Example code that retrieves a document, it's content (in json or cvs format)
@@ -22,9 +22,6 @@ import com.researchspace.api.client.model.ApiFile;
  */
 public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     
-    /** ID of an example document stored on API Test User account on RSpace Community. */
-    private static final long TEST_DOC_ID = 90316;
-
     /** 
      * Retrieve document and print its content.
      */
@@ -32,10 +29,10 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void printDocumentsContent() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        ApiDocument document = apiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        Document document = apiConnector.retrieveDocument(getTestDocId());
         
         System.out.printf("Printing content of '%s' (globalId: %s).\n", document.getName(), document.getGlobalId());
-        for (ApiField field : document.getFields()) {
+        for (Field field : document.getFields()) {
             System.out.println(field.getName() + ": " + field.getContent());
         }
     }
@@ -47,13 +44,13 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentInCsvFormat() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        String contentAsCsv = apiConnector.makeSingleCSVDocumentRequest(TEST_DOC_ID);
+        String contentAsCsv = apiConnector.retrieveDocumentAsCSV(getTestDocId());
         
-        String outputFileName = TEST_DOC_ID + ".csv";
+        String outputFileName = getTestDocId() + ".csv";
         try (PrintWriter out = new PrintWriter(outputFileName)) {
             out.println(contentAsCsv);
         }
-        System.out.printf("Document %d saved into file '%s'. \n", TEST_DOC_ID, outputFileName);
+        System.out.printf("Document %d saved into file '%s'. \n", getTestDocId(), outputFileName);
     }
 
     /**
@@ -63,23 +60,27 @@ public class RetrieveDocumentAndAttachments extends FixedIntervalTest {
     public void saveDocumentsAttachments() throws URISyntaxException, IOException {
         
         ApiConnector apiConnector = createApiConnector();
-        ApiDocument document = apiConnector.makeSingleDocumentRequest(TEST_DOC_ID);
+        Document document = apiConnector.retrieveDocument(getTestDocId());
 
-        List<ApiField> fields = document.getFields();
+        List<Field> fields = document.getFields();
         List<ApiFile> attachments = new ArrayList<>();
-        for (ApiField f : fields) {
+        for (Field f : fields) {
             attachments.addAll(f.getFiles());
         }
 
         System.out.printf("Retrieved document '%s' (globalId: %s), which contains %d attachment(s).\n",
                 document.getName(), document.getGlobalId(), attachments.size());
         
-        for (ApiFile apiFile : attachments) {
-            InputStream content = apiConnector.makeFileDataRequest(apiFile);
-            File file = new File(apiFile.getName());
+        for (ApiFile File : attachments) {
+            InputStream content = apiConnector.retrieveFileData(File);
+            File file = new File(File.getName());
             FileUtils.copyInputStreamToFile(content, file);
-            System.out.println("Saved attachment: " + apiFile.getName());
+            System.out.println("Saved attachment: " + File.getName());
         }
+    }
+    
+    private long getTestDocId() {
+        return Long.parseLong(configReader.getConfigProperty("testDocId"));
     }
 
 }
