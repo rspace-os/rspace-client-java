@@ -21,52 +21,57 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
+import com.researchspace.api.clientmodel.DocumentPost;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
-import com.researchspace.api.clientmodel.Field;
 import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
 import com.researchspace.api.clientmodel.LinkItem;
 
 /**
  * Main helper class providing methods for connecting to RSpace API.
- * The connection code uses serverURL and apiKey properties set in config file.  
  */
 public class ApiConnectorImpl implements ApiConnector {
-    
+
     private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents";
     private static final String API_FILES_ENDPOINT = "/api/v1/files"; 
     
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int CONNECT_TIMEOUT = 15000;
 
-    private final String serverURL;
+    private final String serverUrl;
     private final String apiKey;
 
+    /**
+     * Constructor that reads serverURL and apiKey properties from config.properties file.  
+     */
     public ApiConnectorImpl() throws IOException {
         ConfigPropertiesReader configReader = new ConfigPropertiesReader();
-        serverURL = configReader.getConfigProperty("serverURL");
+        serverUrl = configReader.getConfigProperty("serverURL");
         apiKey = configReader.getConfigProperty("apiKey");
     }
     
+    /**
+     * Constructor that allows passing your serverUrl and apiKey 
+     */
     public ApiConnectorImpl(String serverUrl, String apiKey) {
-        this.serverURL = serverUrl;
+        this.serverUrl = serverUrl;
         this.apiKey = apiKey;
     }
 
     /* (non-Javadoc)
-	 * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(java.lang.String, java.util.Map)
-	 */
+     * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(java.lang.String, java.util.Map)
+     */
     @Override
-	public DocumentSearchResult searchDocuments(String searchQuery, Map<String, String> searchParams) 
-	        throws URISyntaxException, IOException {
+    public DocumentSearchResult searchDocuments(String searchQuery,
+            Map<String, String> searchParams) throws URISyntaxException, IOException {
         return makeDocSearchRequest(searchQuery, null, searchParams);
     }
 
     /* (non-Javadoc)
-	 * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(com.researchspace.api.client.AdvancedQuery, java.util.Map)
-	 */
+     * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(com.researchspace.api.client.AdvancedQuery, java.util.Map)
+     */
     @Override
-	public DocumentSearchResult searchDocuments(AdvancedQuery advQuery, 
+    public DocumentSearchResult searchDocuments(AdvancedQuery advQuery, 
             Map<String, String> searchParams) throws URISyntaxException, IOException {
 
         return makeDocSearchRequest(null, advQuery, searchParams);
@@ -97,66 +102,53 @@ public class ApiConnectorImpl implements ApiConnector {
     };
     
     @Override
-    public Document createDocument(Document document) throws IOException {
-        String docAsString = makeDocumentApiPostRequest(document).asString();
+    public Document createDocument(DocumentPost documentPost) throws IOException {
+        String docAsString = makeDocumentApiPostRequest(documentPost).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
     }
     
     /* (non-Javadoc)
-	 * @see com.researchspace.api.client.ApiConnector#makeSingleDocumentRequest(long)
-	 */
+     * @see com.researchspace.api.client.ApiConnector#makeSingleDocumentRequest(long)
+     */
     @Override
-	public Document retrieveDocument(long docID) throws IOException {
+    public Document retrieveDocument(long docID) throws IOException {
         String docAsString = makeApiGetRequest(getApiSingleDocumentUrl(docID)).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
     }
 
-	private ObjectMapper createObjectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
-		mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-		return mapper;
-	}
+    private ObjectMapper createObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
+        mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+        return mapper;
+    }
 
     /* (non-Javadoc)
-	 * @see com.researchspace.api.client.ApiConnector#makeSingleCSVDocumentRequest(long)
-	 */
+     * @see com.researchspace.api.client.ApiConnector#makeSingleCSVDocumentRequest(long)
+     */
     @Override
-	public String retrieveDocumentAsCSV(long docID) throws IOException {
+    public String retrieveDocumentAsCSV(long docID) throws IOException {
         return makeApiGetRequest(getApiSingleDocumentUrl(docID), "text/csv").asString();
     }
     
     /* (non-Javadoc)
-	 * @see com.researchspace.api.client.ApiConnector#makeLinkedObjectRequest(java.lang.String, java.lang.Class)
-	 */
+     * @see com.researchspace.api.client.ApiConnector#makeLinkedObjectRequest(java.lang.String, java.lang.Class)
+     */
     @Override
-	public <T> T retrieveLinkedObject(String link, Class<T> objectType) throws IOException {
+    public <T> T retrieveLinkedObject(String link, Class<T> objectType) throws IOException {
         String objectAsString = makeApiGetRequest(link, "application/json").asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(objectAsString, objectType);
     }
 
     @Override
-    public Document updateDocument(Document document) throws IOException {
-        prepareDocumentForPutRequest(document);
-        String docAsString = makeDocumentApiPutRequest(document).asString();
+    public Document updateDocument(Long docId, DocumentPost documentPost) throws IOException {
+        String docAsString = makeDocumentApiPutRequest(docId, documentPost).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
-    }
-
-    // if document was retrieved by API these will be in invalid format (json). 
-    // date fields are unmodifiable anyway. 
-    private void prepareDocumentForPutRequest(Document document) {
-        document.setCreated(null);
-        document.setLastModified(null);
-        if (document.getFields() != null) {
-            for (Field field : document.getFields()) {
-                field.setLastModified(null);
-            }
-        }
     }
 
     /* (non-Javadoc)
@@ -225,8 +217,8 @@ public class ApiConnectorImpl implements ApiConnector {
     protected Content makeApiGetRequest(String uriString) throws IOException {
         return makeApiGetRequest(uriString, "application/json");
     }
-    
-    private Content makeDocumentApiPostRequest(Document document) throws IOException {
+
+    private Content makeDocumentApiPostRequest(DocumentPost document) throws IOException {
         Validate.notNull(document);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
@@ -238,10 +230,10 @@ public class ApiConnectorImpl implements ApiConnector {
                 .execute();
         return response.returnContent();
     }
-    
-    private Content makeDocumentApiPutRequest(Document document) throws IOException {
-        Validate.notNull(document.getId());
-        String docUpdateUrl = getApiSingleDocumentUrl(document.getId());
+
+    private Content makeDocumentApiPutRequest(Long docId, DocumentPost document) throws IOException {
+        Validate.notNull(docId);
+        String docUpdateUrl = getApiSingleDocumentUrl(docId);
         System.out.println("updating document url: " + docUpdateUrl);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
@@ -265,9 +257,9 @@ public class ApiConnectorImpl implements ApiConnector {
                 .execute();
         return response.returnContent();
     }
-    
+
     protected String getApiDocumentsUrl() {
-        return serverURL + API_DOCUMENTS_ENDPOINT;
+        return serverUrl + API_DOCUMENTS_ENDPOINT;
     }
 
     protected String getApiSingleDocumentUrl(long docId) {
@@ -275,7 +267,7 @@ public class ApiConnectorImpl implements ApiConnector {
     }
 
     protected String getApiFilesUrl() {
-        return serverURL + API_FILES_ENDPOINT;
+        return serverUrl + API_FILES_ENDPOINT;
     }
 
     protected String getApiSingleFileUrl(long fileId) {
