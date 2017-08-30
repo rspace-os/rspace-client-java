@@ -11,15 +11,11 @@ To run the unit tests from the command line:
     > cd API
     > ./gradlew clean test
 
-To run the examples for a different user, or different RSpace server, update the [config.properties](https://github.com/rspace-os/rspace-client-java/blob/master/API/config.properties) file. To enable API access for a particular user you need to 'Regenerate API key' at your RSpace profile page.
+To enable API access for a particular user you need to 'Regenerate API key' at 'My Profile' page in RSpace.
 
-You'll also need to update the line:
+To run the examples for a different user, or different RSpace server, update the `apiKey` property in [config.properties](https://github.com/rspace-os/rspace-client-java/blob/master/API/config.properties) file to the API Key of your User. You should also update the `testDocId` property to an ID of a document in your own account, or the RetrieveDocumentAndAttachments test will fail.
 
-    private static final long TEST_DOC_ID = 90316;
-
-in class `RetrieveDocumentAndAttachments` to an ID of a document in your own account for that test to work.
-
-Minimum version of RSpace required: 1.41
+Minimum version of RSpace required: 1.45
 
 Minimum version of Java required: 1.8
 

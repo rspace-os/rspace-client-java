@@ -2,7 +2,7 @@
 
 ### Introduction
 
-From version 1.40, RSpace can now be accessed through an API. The API should be considered incomplete, provisional and subject to revision. A stable version 1 API is expected in Q1 of 2017.
+From version 1.40, RSpace can now be accessed through an API. The API should be considered provisional and subject to revision.
 
 ### Access
 
@@ -21,6 +21,8 @@ The rate of API calls you can make is currently limited, while we evaluate the p
 * Maximum 15 requests per 15 seconds.
 * Maximum 1000 requests per hour.
 * Maximum 5000 requests per day.
+* Maximum 100 MB uploaded per hour.
+* Maximum 1000 MB uploaded per day.
 
 Please allow at least 100ms between requests.
 
@@ -41,6 +43,9 @@ You can set custom usage limits for your RSpace installation using the following
 * **api.user.limit.hour** Maximum requests per user per hour
 * **api.user.limit.15s** Maximum requests per user per 15s
 * **api.user.minInterval** Minimum interval between requests
+* **api.fileuploadRateLimit.enabled** Set to true to enable, the limit properties below are ignored if this property is false.
+* **api.user.fileuploadRateLimit.hour** Maximum file upload per user per hour, in Mb
+* **api.user.fileuploadRateLimit.day** Maximum file upload per user per day, in Mb
 
 * **api.global.limit.day** Maximum total requests per day
 * **api.global.limit.hour** Maximum total requests per hour
