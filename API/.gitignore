@@ -1,6 +1,8 @@
 .gradle/
 .settings
+.classpath
+.project
 build/
 bin/
 *.csv
-Picture1.png
+E2_Picture1.png
