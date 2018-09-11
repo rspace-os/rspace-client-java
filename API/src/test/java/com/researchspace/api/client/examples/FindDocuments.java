@@ -56,9 +56,11 @@ public class FindDocuments extends FixedIntervalTest {
 
         DocumentSearchResult paginatedDocs = apiConnector.searchDocuments("", extraSearchParams);
         String nextLink = paginatedDocs.getLinkByType(LinkItem.NEXT_REL);
-
+        int maxPages =10;
+        int currPage=0;
         /* go through all search result pages */ 
-        while (nextLink != null) {
+        while (nextLink != null && currPage < maxPages) {
+        	currPage++;
             System.out.println("at page: " + paginatedDocs.getPageNumber());
             System.out.println("next link: " + nextLink);
 
@@ -78,7 +80,7 @@ public class FindDocuments extends FixedIntervalTest {
     @Test
     public void simpleSearch() throws IOException, URISyntaxException {
 
-        String searchQuery = "api*";
+        String searchQuery = "pcr";
         ApiConnector apiConnector =createApiConnector();
         DocumentSearchResult searchResult = apiConnector.searchDocuments(searchQuery, null);
 
