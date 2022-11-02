@@ -8,3 +8,4 @@ bin/
 *.csv
 E2_Picture1.png
 target/*
+*.iml
