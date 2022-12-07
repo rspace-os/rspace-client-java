@@ -14,6 +14,7 @@ import com.researchspace.api.clientmodel.FileSearchResult;
 
 public interface ApiConnector {
 
+    Map<String,String> getUserNamesAndApiKeys() throws Exception;
     /**
      * General search for a particular phrase. Corresponds to Workspace 'All'
      * search.

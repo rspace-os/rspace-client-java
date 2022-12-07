@@ -16,6 +16,7 @@ To enable API access for a particular user you need to 'Regenerate API key' at '
 
 To run the examples for a different user, or different RSpace server, update the `apiKey` property in [config.properties](https://github.com/rspace-os/rspace-client-java/blob/master/API/config.properties) file to the API Key of your User. You should also update the `testDocId` property to an ID of a document in your own account, or the RetrieveDocumentAndAttachments test will fail.
 
+The test FindDocumentsTest.advancedSearch will FAIL if run as sysadmin as Syadmin is not allowed to do wildcard searches - 
 Minimum version of RSpace required: 1.80
 
 Minimum version of Java required: 1.18

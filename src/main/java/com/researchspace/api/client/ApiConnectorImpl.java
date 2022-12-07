@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.Validate;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Content;
@@ -43,6 +44,7 @@ public class ApiConnectorImpl implements ApiConnector {
     
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int CONNECT_TIMEOUT = 15000;
+    private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
 
     private final String serverUrl;
     private final String apiKey;
@@ -63,6 +65,12 @@ public class ApiConnectorImpl implements ApiConnector {
         this.serverUrl = serverUrl;
         this.apiKey = apiKey;
     }
+
+    @Override
+    public Map<String, String> getUserNamesAndApiKeys() throws Exception {
+        return makeUserNameAndKeyRequest();
+    }
+
 
     /* (non-Javadoc)
      * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(java.lang.String, java.util.Map)
@@ -106,6 +114,15 @@ public class ApiConnectorImpl implements ApiConnector {
        
         return mapper.readValue(docSearchResponse, DocumentSearchResult.class);
     };
+
+    private Map<String, String> makeUserNameAndKeyRequest() throws Exception {
+        URIBuilder builder = new URIBuilder(getUserNameAndKeyUrl());
+        String uri = builder.build().toString();
+        String docSearchResponse = makeApiGetRequest(uri).asString();
+        ObjectMapper mapper = createObjectMapper();
+
+        return mapper.readValue(docSearchResponse, new TypeReference<Map<String, String>>(){});
+    }
     
     @Override
     public Document createDocument(DocumentPost documentPost) throws IOException {
@@ -266,6 +283,9 @@ public class ApiConnectorImpl implements ApiConnector {
 
     protected String getApiDocumentsUrl() {
         return serverUrl + API_DOCUMENTS_ENDPOINT;
+    }
+    private String getUserNameAndKeyUrl() {
+        return serverUrl + USER_NAME_AND_KEY_ENDPOINT;
     }
 
     protected String getApiSingleDocumentUrl(long docId) {

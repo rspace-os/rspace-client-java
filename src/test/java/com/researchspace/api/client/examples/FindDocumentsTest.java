@@ -85,7 +85,7 @@ class FindDocumentsTest extends FixedIntervalTest {
     @Test
     void simpleSearch() throws IOException, URISyntaxException {
 
-        String searchQuery = "pcr";
+        String searchQuery = "_pcr_";
         ApiConnector apiConnector =createApiConnector();
         DocumentSearchResult searchResult = apiConnector.searchDocuments(searchQuery, null);
 
@@ -100,6 +100,7 @@ class FindDocumentsTest extends FixedIntervalTest {
 
     /**
      * Search for documents with a particular tag and name.
+     * NOTE - WILL FAIL IF RUN AS SYSADMIN
      */
     @Test
     void advancedSearch() throws IOException, URISyntaxException {
