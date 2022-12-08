@@ -47,7 +47,7 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
 
     private final String serverUrl;
-    private final String apiKey;
+    private final String configuredApiKey;
 
     /**
      * Constructor that reads serverURL and apiKey properties from config.properties file.  
@@ -55,7 +55,7 @@ public class ApiConnectorImpl implements ApiConnector {
     public ApiConnectorImpl() throws IOException {
         ConfigPropertiesReader configReader = new ConfigPropertiesReader();
         serverUrl = configReader.getConfigProperty("serverURL");
-        apiKey = configReader.getConfigProperty("apiKey");
+        configuredApiKey = configReader.getConfigProperty("apiKey");
     }
     
     /**
@@ -63,7 +63,7 @@ public class ApiConnectorImpl implements ApiConnector {
      */
     public ApiConnectorImpl(String serverUrl, String apiKey) {
         this.serverUrl = serverUrl;
-        this.apiKey = apiKey;
+        this.configuredApiKey = apiKey;
     }
 
     @Override
@@ -125,8 +125,8 @@ public class ApiConnectorImpl implements ApiConnector {
     }
     
     @Override
-    public Document createDocument(DocumentPost documentPost) throws IOException {
-        String docAsString = makeDocumentApiPostRequest(documentPost).asString();
+    public Document createDocument(DocumentPost documentPost, String apiKey) throws IOException {
+        String docAsString = makeDocumentApiPostRequest(documentPost, apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
     }
@@ -215,13 +215,16 @@ public class ApiConnectorImpl implements ApiConnector {
     }
 
     @Override
-    public ApiFile uploadFile(FilePost filePost) throws IOException {
-        String fileUploadResponse = makeFileUploadApiRequest(filePost).asString();
+    public ApiFile uploadFile(FilePost filePost, String apiKey) throws IOException {
+        String fileUploadResponse = makeFileUploadApiRequest(filePost, apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(fileUploadResponse, ApiFile.class);
     }
 
     private Content makeFileUploadApiRequest(FilePost filePost) throws IOException {
+        return makeFileUploadApiRequest(filePost, null);
+    }
+    private Content makeFileUploadApiRequest(FilePost filePost, String apiKey) throws IOException {
         HttpEntity fileUploadEntity = MultipartEntityBuilder
                 .create()
                 .addBinaryBody("file", filePost.getFile())
@@ -229,7 +232,7 @@ public class ApiConnectorImpl implements ApiConnector {
                 .addTextBody("caption", filePost.getCaption())
                 .build();
         Response response = Request.Post(getApiFilesUrl())
-                .addHeader("apiKey", apiKey)
+                .addHeader("apiKey", apiKey != null ? apiKey: configuredApiKey)
                 .body(fileUploadEntity)
                 .connectTimeout(CONNECT_TIMEOUT)
                 .socketTimeout(SOCKET_TIMEOUT)
@@ -242,11 +245,15 @@ public class ApiConnectorImpl implements ApiConnector {
     }
 
     private Content makeDocumentApiPostRequest(DocumentPost document) throws IOException {
+        return makeDocumentApiPostRequest(document, null);
+    }
+
+    private Content makeDocumentApiPostRequest(DocumentPost document, String apiKey) throws IOException {
         Validate.notNull(document);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
         Response response = Request.Post(getApiDocumentsUrl())
-                .addHeader("apiKey", apiKey)
+                .addHeader("apiKey", apiKey != null ? apiKey: configuredApiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
                 .connectTimeout(CONNECT_TIMEOUT)
                 .socketTimeout(SOCKET_TIMEOUT)
@@ -262,7 +269,7 @@ public class ApiConnectorImpl implements ApiConnector {
         String documentAsJson = mapper.writeValueAsString(document);
         log.info("updating document with json: {}", documentAsJson);
         Response response = Request.Put(docUpdateUrl)
-                .addHeader("apiKey", apiKey)
+                .addHeader("apiKey", configuredApiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
                 .connectTimeout(CONNECT_TIMEOUT)
                 .socketTimeout(SOCKET_TIMEOUT)
@@ -274,7 +281,7 @@ public class ApiConnectorImpl implements ApiConnector {
     protected Content makeApiGetRequest(String uriString, String responseContentType) throws IOException {
         Response response = Request.Get(uriString)
                 .addHeader("Accept", responseContentType)
-                .addHeader("apiKey", apiKey)
+                .addHeader("apiKey", configuredApiKey)
                 .connectTimeout(CONNECT_TIMEOUT)
                 .socketTimeout(SOCKET_TIMEOUT)
                 .execute();

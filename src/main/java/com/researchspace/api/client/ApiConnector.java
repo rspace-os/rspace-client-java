@@ -55,8 +55,7 @@ public interface ApiConnector {
      *      document to create
      * @return created document
      */
-    Document createDocument(DocumentPost document) throws IOException;
-
+    Document createDocument(DocumentPost document, String apiKey) throws IOException;
     /**
      * Returns representation of a single document (with fields).
      */
@@ -102,6 +101,6 @@ public interface ApiConnector {
      * @param file
      *          details of file to upload
      */
-    ApiFile uploadFile(FilePost file) throws IOException;
+    ApiFile uploadFile(FilePost file, String apiKey) throws IOException;
 
 }

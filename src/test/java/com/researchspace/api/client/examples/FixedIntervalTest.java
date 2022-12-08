@@ -13,9 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class FixedIntervalTest {
+    ConfigPropertiesReader configReader = new ConfigPropertiesReader();
+    String serverUrl = configReader.getConfigProperty("serverURL");
+    String configuredApiKey = configReader.getConfigProperty("apiKey");
 
-    protected ConfigPropertiesReader configReader = new ConfigPropertiesReader();
-    
     protected ApiConnector createApiConnector() throws IOException {
         ApiConnectorImpl apiConnector = new ApiConnectorImpl();
         return (ApiConnector) Proxy.newProxyInstance(FixedIntervalTest.class.getClassLoader(),
