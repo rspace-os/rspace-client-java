@@ -6,15 +6,21 @@ import com.researchspace.api.client.ApiConnector;
 import com.researchspace.api.clientmodel.DocumentInfo;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.LinkItem;
+import com.researchspace.api.clientmodel.User;
+import org.apache.http.client.HttpResponseException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.HttpRetryException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -54,6 +60,32 @@ class GetUserInfoTest extends FixedIntervalTest {
         for (DocumentInfo doc : searchResult.getDocuments()) {
             printOutDocDetails(doc);
         }
+    }
+
+    /**
+     * Get user object by username using getUserNamesAndApiKeys method
+     */
+    @Test
+    void getsUserByUsername() throws Exception {
+
+        ApiConnector apiConnector = createApiConnector();
+
+        User user = apiConnector.getUserByUsername("sysadmin1");
+
+        assertNull(user);
+
+    }
+
+    /**
+     * Get user object by username using getUserNamesAndApiKeys method username does not exist
+     */
+    @Test
+    void getsUserByUsernameWhichDoesNotExistThrowsException() throws Exception {
+
+        ApiConnector apiConnector = createApiConnector();
+
+        assertThrows(HttpResponseException.class, () -> apiConnector.getUserByUsername("blahblah"));
+
     }
 
 

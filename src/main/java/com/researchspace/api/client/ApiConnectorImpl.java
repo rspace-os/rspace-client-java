@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.researchspace.api.clientmodel.User;
 import org.apache.commons.lang.Validate;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Content;
@@ -45,7 +46,7 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int CONNECT_TIMEOUT = 15000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
-
+    private static final String USER_DETAILS_ENDPOINT = "/api/v1/userDetails";
     private final String serverUrl;
     private final String configuredApiKey;
 
@@ -64,6 +65,17 @@ public class ApiConnectorImpl implements ApiConnector {
     public ApiConnectorImpl(String serverUrl, String apiKey) {
         this.serverUrl = serverUrl;
         this.configuredApiKey = apiKey;
+    }
+
+    @Override
+    public User getUserByUsername(String username) throws Exception {
+        Map<String, String> usersAndAPIKeys = getUserNamesAndApiKeys();
+        URIBuilder builder = new URIBuilder(getUserDetailsEndpoint() + "/whoami");
+        String uri = builder.build().toString();
+        String userWhoAmIResponse = makeApiGetRequestWithAPIKey(uri, usersAndAPIKeys.get(username)).asString();
+        ObjectMapper mapper = createObjectMapper();
+
+        return mapper.readValue(userWhoAmIResponse, User.class);
     }
 
     @Override
@@ -113,7 +125,8 @@ public class ApiConnectorImpl implements ApiConnector {
         ObjectMapper mapper = createObjectMapper();
        
         return mapper.readValue(docSearchResponse, DocumentSearchResult.class);
-    };
+    }
+
 
     private Map<String, String> makeUserNameAndKeyRequest() throws Exception {
         URIBuilder builder = new URIBuilder(getUserNameAndKeyUrl());
@@ -244,6 +257,10 @@ public class ApiConnectorImpl implements ApiConnector {
         return makeApiGetRequest(uriString, "application/json");
     }
 
+    protected Content makeApiGetRequestWithAPIKey(String uriString, String apiKey) throws IOException {
+        return makeApiGetRequestWithApiKey(uriString, "application/json", apiKey);
+    }
+
     private Content makeDocumentApiPostRequest(DocumentPost document) throws IOException {
         return makeDocumentApiPostRequest(document, null);
     }
@@ -288,11 +305,27 @@ public class ApiConnectorImpl implements ApiConnector {
         return response.returnContent();
     }
 
+    /* makes the HTTP query and returns the results as a Content object */
+    protected Content makeApiGetRequestWithApiKey(String uriString, String responseContentType, String apiKey) throws IOException {
+        Response response = Request.Get(uriString)
+                .addHeader("Accept", responseContentType)
+                .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
     protected String getApiDocumentsUrl() {
         return serverUrl + API_DOCUMENTS_ENDPOINT;
     }
+
     private String getUserNameAndKeyUrl() {
         return serverUrl + USER_NAME_AND_KEY_ENDPOINT;
+    }
+
+    private String getUserDetailsEndpoint() {
+        return serverUrl + USER_DETAILS_ENDPOINT;
     }
 
     protected String getApiSingleDocumentUrl(long docId) {

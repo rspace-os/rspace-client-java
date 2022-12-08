@@ -11,8 +11,11 @@ import com.researchspace.api.clientmodel.DocumentPost;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
+import com.researchspace.api.clientmodel.User;
 
 public interface ApiConnector {
+
+    User getUserByUsername(String username) throws Exception;
 
     Map<String,String> getUserNamesAndApiKeys() throws Exception;
     /**
