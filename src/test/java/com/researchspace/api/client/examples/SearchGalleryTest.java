@@ -1,15 +1,14 @@
 package com.researchspace.api.client.examples;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.client.ApiConnectorImpl;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.FileSearchResult;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /** 
  * Example code that lists files uploaded to the Gallery. 
@@ -27,7 +26,7 @@ class SearchGalleryTest extends FixedIntervalTest {
     void printPageOfGalleryItems() throws IOException, URISyntaxException {
         
         ApiConnector apiConnector = createApiConnector();
-        FileSearchResult galleryImages = apiConnector.searchFiles("", null);
+        FileSearchResult galleryImages = apiConnector.searchFiles("", null, configuredApiKey);
 
         /* search results are paginated, printing only the first page */
         log.info("User has {} file(s) in their Gallery.", galleryImages.getTotalHits() );

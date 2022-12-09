@@ -49,7 +49,7 @@ class CreateDocumentTest extends FixedIntervalTest {
 
         DocumentPost docToUpdate = DocumentPost.builder().build();
         docToUpdate.setName("updated with API");
-        Document updatedDoc = apiConnector.updateDocument(createdDoc.getId(), docToUpdate);
+        Document updatedDoc = apiConnector.updateDocument(createdDoc.getId(), docToUpdate, configuredApiKey);
         assertEquals(createdDoc.getId(), updatedDoc.getId());
         assertEquals("updated with API", updatedDoc.getName());
         assertEquals("", updatedDoc.getFields().get(0).getContent());

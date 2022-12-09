@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class FixedIntervalTest {
     ConfigPropertiesReader configReader = new ConfigPropertiesReader();
-    String serverUrl = configReader.getConfigProperty("serverURL");
     String configuredApiKey = configReader.getConfigProperty("apiKey");
 
     protected ApiConnector createApiConnector() throws IOException {

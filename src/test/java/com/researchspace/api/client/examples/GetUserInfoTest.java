@@ -1,24 +1,16 @@
 package com.researchspace.api.client.examples;
 
-import com.researchspace.api.client.AdvancedQuery;
-import com.researchspace.api.client.AdvancedQueryElem;
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.clientmodel.DocumentInfo;
-import com.researchspace.api.clientmodel.DocumentSearchResult;
-import com.researchspace.api.clientmodel.LinkItem;
 import com.researchspace.api.clientmodel.User;
 import org.apache.http.client.HttpResponseException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.HttpRetryException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,6 +25,7 @@ class GetUserInfoTest extends FixedIntervalTest {
             .getLogger(GetUserInfoTest.class);
 
 
+
     /**
      * General search for a particular phrase. Corresponds to Workspace 'All' search.
      */
@@ -41,25 +34,20 @@ class GetUserInfoTest extends FixedIntervalTest {
 
         ApiConnector apiConnector = createApiConnector();
 
-        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys();
+        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys(configuredApiKey);
 
         assertTrue(userAndKey.size() > 0);
     }
 
     @Test
-    void getsUnauthorisedErrorWhenNotRunAsSysadmin() throws IOException, URISyntaxException {
+    void getsUnauthorisedErrorWhenNotRunAsSysadmin() throws Exception {
 
-        String searchQuery = "_pcr_";
         ApiConnector apiConnector = createApiConnector();
-        DocumentSearchResult searchResult = apiConnector.searchDocuments(searchQuery, null);
 
-        /* search results are paginated, printing only the first page */
-        log.info("Found {} document(s) matching the '{}' query: \n", searchResult.getTotalHits(), searchQuery);
-        log.info("Printing first {} document(s).", searchResult.getDocuments().size());
+        HttpResponseException thrown =
+                Assertions.assertThrows(HttpResponseException.class, () -> apiConnector.getUserNamesAndApiKeys("abcdefghijklmnop3"));
+        assertEquals(401,thrown.getStatusCode());
 
-        for (DocumentInfo doc : searchResult.getDocuments()) {
-            printOutDocDetails(doc);
-        }
     }
 
     /**
@@ -70,9 +58,9 @@ class GetUserInfoTest extends FixedIntervalTest {
 
         ApiConnector apiConnector = createApiConnector();
 
-        User user = apiConnector.getUserByUsername("sysadmin1");
+        User user = apiConnector.getUserByUsername("sysadmin1", configuredApiKey);
 
-        assertNull(user);
+        assertTrue(user.getUsername().equals("sysadmin1"));
 
     }
 
@@ -84,17 +72,10 @@ class GetUserInfoTest extends FixedIntervalTest {
 
         ApiConnector apiConnector = createApiConnector();
 
-        assertThrows(HttpResponseException.class, () -> apiConnector.getUserByUsername("blahblah"));
+        assertThrows(HttpResponseException.class, () -> apiConnector.getUserByUsername("blahblah",configuredApiKey));
 
     }
 
-
-    private void printOutDocDetails(DocumentInfo docInfo) {
-        String details = String.format("Document: %s, form: %s, globalId: %s, createdAt: %s, lastModified: %s",
-                docInfo.getName(), docInfo.getForm().getName(), docInfo.getGlobalId(), docInfo.getCreated(),
-                docInfo.getLastModified());
-        log.info(details);
-    }
 
 }
 

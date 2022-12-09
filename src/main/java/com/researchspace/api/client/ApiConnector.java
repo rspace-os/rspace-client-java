@@ -14,10 +14,9 @@ import com.researchspace.api.clientmodel.FileSearchResult;
 import com.researchspace.api.clientmodel.User;
 
 public interface ApiConnector {
+    User getUserByUsername(String username, String apiKey) throws Exception;
+    Map<String,String> getUserNamesAndApiKeys(String apiKey) throws Exception;
 
-    User getUserByUsername(String username) throws Exception;
-
-    Map<String,String> getUserNamesAndApiKeys() throws Exception;
     /**
      * General search for a particular phrase. Corresponds to Workspace 'All'
      * search.
@@ -31,7 +30,7 @@ public interface ApiConnector {
      *          search parameters (by default: 20 results per page, "last
      *          modified desc" order)
      */
-    DocumentSearchResult searchDocuments(String searchQuery, Map<String, String> searchParams)
+    DocumentSearchResult searchDocuments(String searchQuery, Map<String, String> searchParams, String apiKey)
             throws URISyntaxException, IOException;
 
     /**
@@ -47,7 +46,7 @@ public interface ApiConnector {
      *          search parameters (by default: 20 results per page, "last
      *          modified desc" order)
      */
-    DocumentSearchResult searchDocuments(AdvancedQuery advQuery, Map<String, String> searchParams)
+    DocumentSearchResult searchDocuments(AdvancedQuery advQuery, Map<String, String> searchParams, String apiKey)
             throws URISyntaxException, IOException;
 
     /**
@@ -62,15 +61,15 @@ public interface ApiConnector {
     /**
      * Returns representation of a single document (with fields).
      */
-    Document retrieveDocument(long docId) throws IOException;
+    Document retrieveDocument(long docId, String apiKey) throws IOException;
 
     /**
      * Returns content of a single document in CSV format
      */
-    String retrieveDocumentAsCSV(long docId) throws IOException;
+    String retrieveDocumentAsCSV(long docId, String apiKey) throws IOException;
 
     /** retrieves the object behind the link */
-    <T> T retrieveLinkedObject(String link, Class<T> objectType) throws IOException;
+    <T> T retrieveLinkedObject(String link, Class<T> objectType, String apiKey) throws IOException;
 
     /**
      * Update existing RSpace document.
@@ -81,22 +80,22 @@ public interface ApiConnector {
      *            object containing changes to the document
      * @return updated document
      */
-    Document updateDocument(Long docId, DocumentPost document) throws IOException;
+    Document updateDocument(Long docId, DocumentPost document, String apiKey) throws IOException;
 
     /**
      * Search for Gallery files, based on various criteria.
      */
-    FileSearchResult searchFiles(String mediaType, Map<String, String> searchParams)
+    FileSearchResult searchFiles(String mediaType, Map<String, String> searchParams, String apiKey)
             throws URISyntaxException, IOException;
 
     /**
      * Retrieve details of a particular file from RSpace Gallery.
      * @param fileId
      */
-    ApiFile retrieveFileById(long fileId) throws IOException;
+    ApiFile retrieveFileById(long fileId, String apiKey) throws IOException;
 
     /** returns input stream to file data */
-    InputStream retrieveFileData(ApiFile apiFile) throws IOException;
+    InputStream retrieveFileData(ApiFile apiFile, String apiKey) throws IOException;
 
     /**
      * Upload a file to RSpace Gallery.
