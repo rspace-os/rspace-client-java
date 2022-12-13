@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,10 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * also demonstrates how to navigate paginated results returned by the API.
  */
 class GetUserInfoTest extends FixedIntervalTest {
-
-    private static final Logger log = LoggerFactory
-            .getLogger(GetUserInfoTest.class);
-
 
 
     /**

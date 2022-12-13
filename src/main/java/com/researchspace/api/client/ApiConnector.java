@@ -15,7 +15,11 @@ import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
 import com.researchspace.api.clientmodel.FormInfo;
 import com.researchspace.api.clientmodel.FormPost;
+import com.researchspace.api.clientmodel.GroupInfo;
+import com.researchspace.api.clientmodel.GroupPost;
 import com.researchspace.api.clientmodel.User;
+import com.researchspace.api.clientmodel.UserGroupInfo;
+import com.researchspace.api.clientmodel.UserPost;
 
 public interface ApiConnector {
     User getUserByUsername(String username, String apiKey) throws Exception;
@@ -138,4 +142,8 @@ public interface ApiConnector {
      * @return the shared form which has set group and global permissions to READ
      */
     FormInfo groupShareForm(FormInfo createdForm, String configuredApiKey) throws IOException;
+
+    UserGroupInfo createUser(UserPost userToCreate, String configuredApiKey) throws IOException;
+
+    GroupInfo createGroup(GroupPost groupPost, String configuredApiKey) throws IOException;
 }

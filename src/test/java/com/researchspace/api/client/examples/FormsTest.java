@@ -2,7 +2,6 @@ package com.researchspace.api.client.examples;
 
 
 import com.researchspace.api.client.ApiConnector;
-import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FormInfo;
 import com.researchspace.api.clientmodel.FormPost;
 import org.apache.http.client.HttpResponseException;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,9 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Example code for creating simple and complex documents.
- */
 public class FormsTest extends FixedIntervalTest {
 
     private static final Logger log = LoggerFactory
