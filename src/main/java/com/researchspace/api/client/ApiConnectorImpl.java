@@ -1,5 +1,6 @@
 package com.researchspace.api.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,8 @@ import com.researchspace.api.clientmodel.DocumentPost;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
+import com.researchspace.api.clientmodel.FormInfo;
+import com.researchspace.api.clientmodel.FormPost;
 import com.researchspace.api.clientmodel.LinkItem;
 import com.researchspace.api.clientmodel.User;
 import org.apache.commons.lang.Validate;
@@ -23,6 +26,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -40,8 +44,9 @@ public class ApiConnectorImpl implements ApiConnector {
             .getLogger(ApiConnectorImpl.class);
 
     private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents";
-    private static final String API_FILES_ENDPOINT = "/api/v1/files"; 
-    
+    private static final String API_FILES_ENDPOINT = "/api/v1/files";
+    private static final String API_FORMS_ENDPOINT = "/api/v1/forms";
+
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int CONNECT_TIMEOUT = 15000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
@@ -229,6 +234,126 @@ public class ApiConnectorImpl implements ApiConnector {
         return mapper.readValue(fileUploadResponse, ApiFile.class);
     }
 
+    @Override
+    public FormInfo createForm(FormPost.Form formPost, String apiKey) throws IOException {
+        String formCreationResponse = makeFormCreationRequest(formPost, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formCreationResponse, FormInfo.class);
+    }
+
+    @Override
+    public FormInfo updateForm(FormPost.Form formPost, String apiKey) throws IOException {
+        String formEditResponse = makeFormEditRequest(formPost, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formEditResponse, FormInfo.class);
+    }
+
+    @Override
+    public boolean deleteForm(FormInfo form, String apiKey) throws IOException {
+        int statuscode = makeFormDeleteRequest(form, apiKey);
+        return statuscode == 204;
+    }
+
+    @Override
+    public FormInfo publishForm(FormInfo form, String apiKey) throws IOException {
+        String formPublishResponse = makeFormPublishRequest(form, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formPublishResponse, FormInfo.class);
+    }
+
+    @Override
+    public FormInfo globalShareForm(FormInfo form, String apiKey) throws IOException {
+        String formSharedResponse = makeFormGloballySharedRequest(form, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formSharedResponse, FormInfo.class);
+    }
+
+    @Override
+    public FormInfo groupShareForm(FormInfo form, String apiKey) throws IOException {
+        String formSharedResponse = makeFormGroupSharedRequest(form, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formSharedResponse, FormInfo.class);
+    }
+
+    @Override
+    public FormInfo setIconOnForm(FormInfo form, File iconFile, String apiKey) throws IOException {
+        String formEditResponse = makeFormIconSetRequest(form, iconFile, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(formEditResponse, FormInfo.class);
+    }
+
+    private Content makeFormCreationRequest(FormPost.Form formPForm, String apiKey) throws IOException {
+        ObjectMapper mapper = createObjectMapper();
+        String formAsJson = mapper.writeValueAsString(formPForm);
+        Response response = Request.Post(getApiFormsUrl())
+                .addHeader("apiKey", apiKey)
+                .bodyString(formAsJson, ContentType.APPLICATION_JSON)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+    private Content makeFormEditRequest(FormPost.Form formPForm, String apiKey) throws IOException {
+        ObjectMapper mapper = createObjectMapper();
+        String formAsJson = mapper.writeValueAsString(formPForm);
+        Response response = Request.Put(getApiFormsUrl()+"/"+formPForm.getId())
+                .addHeader("apiKey", apiKey)
+                .bodyString(formAsJson, ContentType.APPLICATION_JSON)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
+    private Content makeFormIconSetRequest(FormInfo form, File iconFile, String apiKey) throws IOException {
+        HttpEntity fileUploadEntity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody("file", iconFile)
+                .build();
+        Response response = Request.Post(getApiFormsUrl()+"/"+form.getId()+"/icon")
+                .addHeader("apiKey", apiKey)
+                .body(fileUploadEntity)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
+    private int makeFormDeleteRequest(FormInfo form, String apiKey) throws IOException {
+        Response response = Request.Delete(getApiFormsUrl()+"/"+form.getId())
+                .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnResponse().getStatusLine().getStatusCode();
+    }
+
+    private Content makeFormPublishRequest (FormInfo form, String apiKey) throws IOException {
+        Response response = Request.Put(getApiFormsUrl()+"/"+form.getId()+"/publish")
+                .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
+    private Content makeFormGloballySharedRequest (FormInfo form, String apiKey) throws IOException {
+        Response response = Request.Put(getApiFormsUrl()+"/"+form.getId()+"/shareglobal")
+                .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+    private Content makeFormGroupSharedRequest (FormInfo form, String apiKey) throws IOException {
+        Response response = Request.Put(getApiFormsUrl()+"/"+form.getId()+"/share")
+                .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
     private Content makeFileUploadApiRequest(FilePost filePost, String apiKey) throws IOException {
         HttpEntity fileUploadEntity = MultipartEntityBuilder
                 .create()
@@ -303,6 +428,10 @@ public class ApiConnectorImpl implements ApiConnector {
 
     protected String getApiFilesUrl() {
         return serverUrl + API_FILES_ENDPOINT;
+    }
+
+    protected String getApiFormsUrl() {
+        return serverUrl + API_FORMS_ENDPOINT;
     }
 
     protected String getApiSingleFileUrl(long fileId) {

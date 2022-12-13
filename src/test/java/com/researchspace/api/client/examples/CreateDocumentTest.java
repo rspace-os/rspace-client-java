@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Example code for creating simple and complex documents.
  */
-class CreateDocumentTest extends FixedIntervalTest {
+public class CreateDocumentTest extends FixedIntervalTest {
 
     private static final Logger log = LoggerFactory
             .getLogger(CreateDocumentTest.class);

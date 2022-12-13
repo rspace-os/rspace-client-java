@@ -1,16 +1,20 @@
 package com.researchspace.api.client;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.researchspace.api.clientmodel.ApiFile;
 import com.researchspace.api.clientmodel.Document;
 import com.researchspace.api.clientmodel.DocumentPost;
 import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
+import com.researchspace.api.clientmodel.FormInfo;
+import com.researchspace.api.clientmodel.FormPost;
 import com.researchspace.api.clientmodel.User;
 
 public interface ApiConnector {
@@ -105,4 +109,33 @@ public interface ApiConnector {
      */
     ApiFile uploadFile(FilePost file, String apiKey) throws IOException;
 
+    FormInfo createForm(FormPost.Form formPost, String apiKey) throws IOException;
+
+    FormInfo updateForm(FormPost.Form formPost, String apiKey) throws IOException;
+
+    /**
+     *
+     * @param form
+     * @param apiKey
+     * @return true if deletion was successful
+     */
+    boolean deleteForm(FormInfo form, String apiKey) throws IOException;
+
+    FormInfo setIconOnForm(FormInfo form, File iconFile,  String apiKey) throws IOException;
+
+    FormInfo publishForm(FormInfo createdForm, String configuredApiKey) throws IOException;
+    /**
+     * Globally shares a form with READ permission, ONLY SYSADMINS can use this API
+     * @param createdForm, an existing form
+     * @param apiKey
+     * @return the shared form which has set group and global permissions to READ
+     */
+    FormInfo globalShareForm(FormInfo createdForm, String configuredApiKey) throws IOException;
+    /**
+     * Shares a form with owners groups with READ permission, FORM owner can use this API
+     * @param createdForm, an existing form
+     * @param apiKey
+     * @return the shared form which has set group and global permissions to READ
+     */
+    FormInfo groupShareForm(FormInfo createdForm, String configuredApiKey) throws IOException;
 }
