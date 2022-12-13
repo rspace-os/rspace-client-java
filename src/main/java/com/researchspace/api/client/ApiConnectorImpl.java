@@ -13,8 +13,12 @@ import com.researchspace.api.clientmodel.FilePost;
 import com.researchspace.api.clientmodel.FileSearchResult;
 import com.researchspace.api.clientmodel.FormInfo;
 import com.researchspace.api.clientmodel.FormPost;
+import com.researchspace.api.clientmodel.GroupInfo;
+import com.researchspace.api.clientmodel.GroupPost;
 import com.researchspace.api.clientmodel.LinkItem;
 import com.researchspace.api.clientmodel.User;
+import com.researchspace.api.clientmodel.UserGroupInfo;
+import com.researchspace.api.clientmodel.UserPost;
 import org.apache.commons.lang.Validate;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Content;
@@ -50,6 +54,7 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final int SOCKET_TIMEOUT = 15000;
     private static final int CONNECT_TIMEOUT = 15000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
+    private static final String SYSADMIN_API_ENDPOINT = "/api/v1/sysadmin";
     private static final String USER_DETAILS_ENDPOINT = "/api/v1/userDetails";
     private final String serverUrl;
 
@@ -282,6 +287,20 @@ public class ApiConnectorImpl implements ApiConnector {
         return mapper.readValue(formEditResponse, FormInfo.class);
     }
 
+    @Override
+    public UserGroupInfo createUser(UserPost userToCreate, String apiKey) throws IOException {
+        String userCreationResponse = makeUserCreationRequest(userToCreate, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(userCreationResponse, UserGroupInfo.class);
+    }
+
+    @Override
+    public GroupInfo createGroup(GroupPost groupPost, String apiKey) throws IOException {
+        String groupCreationResponse = makeGroupCreationRequest(groupPost, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(groupCreationResponse, GroupInfo.class);
+    }
+
     private Content makeFormCreationRequest(FormPost.Form formPForm, String apiKey) throws IOException {
         ObjectMapper mapper = createObjectMapper();
         String formAsJson = mapper.writeValueAsString(formPForm);
@@ -348,6 +367,28 @@ public class ApiConnectorImpl implements ApiConnector {
     private Content makeFormGroupSharedRequest (FormInfo form, String apiKey) throws IOException {
         Response response = Request.Put(getApiFormsUrl()+"/"+form.getId()+"/share")
                 .addHeader("apiKey", apiKey)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+    private Content makeUserCreationRequest (UserPost userPost, String apiKey) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String userAsJson = mapper.writeValueAsString(userPost);
+        Response response = Request.Post(getSysAdminUrl()+"/users")
+                .addHeader("apiKey", apiKey)
+                .bodyString(userAsJson, ContentType.APPLICATION_JSON)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+    private Content makeGroupCreationRequest (GroupPost group, String apiKey) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String userAsJson = mapper.writeValueAsString(group);
+        Response response = Request.Post(getSysAdminUrl()+"/groups")
+                .addHeader("apiKey", apiKey)
+                .bodyString(userAsJson, ContentType.APPLICATION_JSON)
                 .connectTimeout(CONNECT_TIMEOUT)
                 .socketTimeout(SOCKET_TIMEOUT)
                 .execute();
@@ -432,6 +473,9 @@ public class ApiConnectorImpl implements ApiConnector {
 
     protected String getApiFormsUrl() {
         return serverUrl + API_FORMS_ENDPOINT;
+    }
+    protected String getSysAdminUrl(){
+        return serverUrl + SYSADMIN_API_ENDPOINT;
     }
 
     protected String getApiSingleFileUrl(long fileId) {
