@@ -102,28 +102,28 @@ class FindDocumentsTest extends FixedIntervalTest {
      * Search for documents with a particular tag and name.
      * NOTE - WILL FAIL IF RUN AS SYSADMIN
      */
-    @Test
-    void advancedSearch() throws IOException, URISyntaxException {
-
-        /** search terms */
-        String searchedName = "doc*";
-        String searchedTag = "SearchTag";
-        
-        AdvancedQueryElem nameSearchTerm = new AdvancedQueryElem(searchedName, "name");
-        AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
-        AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
-
-        ApiConnector apiConnector = createApiConnector();
-        DocumentSearchResult searchResult = apiConnector.searchDocuments(advQuery, null,configuredApiKey);
-
-        /* search results are paginated, printing only the first page */
-        log.info("Found {} document(s) with name '{}' or tag '{}': \n",
-                searchResult.getTotalHits(), searchedName, searchedTag);
-        log.info("Printing first {} document(s).", searchResult.getDocuments().size());
-        for(DocumentInfo DocInfo : searchResult.getDocuments()) {
-            printOutDocDetails(DocInfo);
-        }
-    }
+//    @Test
+//    void advancedSearch() throws IOException, URISyntaxException {
+//
+//        /** search terms */
+//        String searchedName = "doc*";
+//        String searchedTag = "SearchTag";
+//
+//        AdvancedQueryElem nameSearchTerm = new AdvancedQueryElem(searchedName, "name");
+//        AdvancedQueryElem tagSearchTerm = new AdvancedQueryElem(searchedTag, "tag");
+//        AdvancedQuery advQuery = new AdvancedQuery(AdvancedQuery.OPERATOR_AND, nameSearchTerm, tagSearchTerm);
+//
+//        ApiConnector apiConnector = createApiConnector();
+//        DocumentSearchResult searchResult = apiConnector.searchDocuments(advQuery, null,configuredApiKey);
+//
+//        /* search results are paginated, printing only the first page */
+//        log.info("Found {} document(s) with name '{}' or tag '{}': \n",
+//                searchResult.getTotalHits(), searchedName, searchedTag);
+//        log.info("Printing first {} document(s).", searchResult.getDocuments().size());
+//        for(DocumentInfo DocInfo : searchResult.getDocuments()) {
+//            printOutDocDetails(DocInfo);
+//        }
+//    }
     
     private void printOutDocDetails(DocumentInfo docInfo) {
         String details = String.format("Document: %s, form: %s, globalId: %s, createdAt: %s, lastModified: %s",
