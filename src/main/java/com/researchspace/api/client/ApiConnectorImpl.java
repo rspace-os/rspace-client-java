@@ -1,24 +1,10 @@
 package com.researchspace.api.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.researchspace.api.clientmodel.ApiFile;
-import com.researchspace.api.clientmodel.Document;
-import com.researchspace.api.clientmodel.DocumentPost;
-import com.researchspace.api.clientmodel.DocumentSearchResult;
-import com.researchspace.api.clientmodel.FilePost;
-import com.researchspace.api.clientmodel.FileSearchResult;
-import com.researchspace.api.clientmodel.FormInfo;
-import com.researchspace.api.clientmodel.FormPost;
-import com.researchspace.api.clientmodel.GroupInfo;
-import com.researchspace.api.clientmodel.GroupPost;
-import com.researchspace.api.clientmodel.LinkItem;
-import com.researchspace.api.clientmodel.User;
-import com.researchspace.api.clientmodel.UserGroupInfo;
-import com.researchspace.api.clientmodel.UserPost;
+import com.researchspace.api.clientmodel.*;
 import org.apache.commons.lang.Validate;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Content;
@@ -93,8 +79,7 @@ public class ApiConnectorImpl implements ApiConnector {
      * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(java.lang.String, java.util.Map)
      */
     @Override
-    public DocumentSearchResult searchDocuments(String searchQuery,
-            Map<String, String> searchParams,String apiKey) throws URISyntaxException, IOException {
+    public DocumentSearchResult searchDocuments(String searchQuery, Map<String, String> searchParams, String apiKey) throws URISyntaxException, IOException {
         return makeDocSearchRequest(searchQuery, null, searchParams, apiKey);
     }
 
@@ -239,6 +224,10 @@ public class ApiConnectorImpl implements ApiConnector {
         return mapper.readValue(fileUploadResponse, ApiFile.class);
     }
 
+    public FormSearchResult getForms(String apiKey, Map<String, String> searchParams, String query) throws IOException, URISyntaxException {
+        return makeFormGetRequest(apiKey, searchParams, query);
+    }
+
     @Override
     public FormInfo createForm(FormPost.Form formPost, String apiKey) throws IOException {
         String formCreationResponse = makeFormCreationRequest(formPost, apiKey).asString();
@@ -299,6 +288,25 @@ public class ApiConnectorImpl implements ApiConnector {
         String groupCreationResponse = makeGroupCreationRequest(groupPost, apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(groupCreationResponse, GroupInfo.class);
+    }
+
+    private FormSearchResult makeFormGetRequest(String apiKey, Map<String, String> searchParams, String searchQuery) throws IOException, URISyntaxException {
+        if (searchParams == null) {
+            searchParams = new HashMap<>();
+        }
+        if (searchQuery != null && searchQuery.length() > 0) {
+            searchParams.put("query", searchQuery);
+        }
+
+        URIBuilder builder = new URIBuilder(getApiFormsUrl());
+        for (Entry<String, String> param : searchParams.entrySet()) {
+            builder.setParameter(param.getKey(), param.getValue());
+        }
+        String uri = builder.build().toString();
+        String formGetResponse = makeApiGetRequest(uri, ContentType.APPLICATION_JSON.toString(), apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+
+        return mapper.readValue(formGetResponse, FormSearchResult.class);
     }
 
     private Content makeFormCreationRequest(FormPost.Form formPForm, String apiKey) throws IOException {

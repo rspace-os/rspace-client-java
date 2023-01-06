@@ -6,20 +6,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.researchspace.api.clientmodel.ApiFile;
-import com.researchspace.api.clientmodel.Document;
-import com.researchspace.api.clientmodel.DocumentPost;
-import com.researchspace.api.clientmodel.DocumentSearchResult;
-import com.researchspace.api.clientmodel.FilePost;
-import com.researchspace.api.clientmodel.FileSearchResult;
-import com.researchspace.api.clientmodel.FormInfo;
-import com.researchspace.api.clientmodel.FormPost;
-import com.researchspace.api.clientmodel.GroupInfo;
-import com.researchspace.api.clientmodel.GroupPost;
-import com.researchspace.api.clientmodel.User;
-import com.researchspace.api.clientmodel.UserGroupInfo;
-import com.researchspace.api.clientmodel.UserPost;
+import com.researchspace.api.clientmodel.*;
 
 public interface ApiConnector {
     User getUserByUsername(String username, String apiKey) throws Exception;
@@ -112,6 +99,9 @@ public interface ApiConnector {
      *          details of file to upload
      */
     ApiFile uploadFile(FilePost file, String apiKey) throws IOException;
+
+
+    FormSearchResult getForms(String apiKey, Map<String, String> searchParams, String query) throws IOException, URISyntaxException ;
 
     FormInfo createForm(FormPost.Form formPost, String apiKey) throws IOException;
 

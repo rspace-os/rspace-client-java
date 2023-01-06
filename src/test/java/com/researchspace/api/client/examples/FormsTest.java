@@ -2,8 +2,10 @@ package com.researchspace.api.client.examples;
 
 
 import com.researchspace.api.client.ApiConnector;
+import com.researchspace.api.clientmodel.DocumentSearchResult;
 import com.researchspace.api.clientmodel.FormInfo;
 import com.researchspace.api.clientmodel.FormPost;
+import com.researchspace.api.clientmodel.FormSearchResult;
 import org.apache.http.client.HttpResponseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,6 +25,33 @@ public class FormsTest extends FixedIntervalTest {
 
     private static final Logger log = LoggerFactory
             .getLogger(FormsTest.class);
+
+
+    @Test
+    void testGetFormsReturnsNonEmptyList() throws IOException, URISyntaxException {
+        ApiConnector apiConnector = createApiConnector();
+        Map<String, String> searchParams = getDefaultSearchParams();
+        FormSearchResult searchResult = apiConnector.getForms(configuredApiKey, searchParams, "");
+        assertNotNull(searchResult);
+        assertTrue(searchResult.getForms().size() > 0);
+    }
+
+    @Test
+    void testGetFormsReturnsNonEmptyListWhenSearchingForEquipmentForm() throws IOException, URISyntaxException {
+        ApiConnector apiConnector = createApiConnector();
+        Map<String, String> searchParams = getDefaultSearchParams();
+        FormSearchResult searchResult = apiConnector.getForms(configuredApiKey, searchParams, "RSpace_Equipment_Form");
+        assertNotNull(searchResult);
+        assertEquals(1, searchResult.getForms().size());
+
+    }
+
+    private Map<String, String> getDefaultSearchParams() {
+        Map<String, String> searchParams = new HashMap<>();
+        searchParams.put("pageSize", "20");
+        searchParams.put("pageNumber", "0");
+        return searchParams;
+    }
 
     @Test
     void createForm() throws IOException, URISyntaxException {
