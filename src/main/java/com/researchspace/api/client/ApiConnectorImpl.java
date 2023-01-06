@@ -35,6 +35,7 @@ public class ApiConnectorImpl implements ApiConnector {
 
     private static final String API_DOCUMENTS_ENDPOINT = "/api/v1/documents";
     private static final String API_FILES_ENDPOINT = "/api/v1/files";
+    private static final String API_FOLDERS_ENDPOINT = "/api/v1/folders";
     private static final String API_FORMS_ENDPOINT = "/api/v1/forms";
 
     private static final int SOCKET_TIMEOUT = 15000;
@@ -175,6 +176,13 @@ public class ApiConnectorImpl implements ApiConnector {
         String docAsString = makeDocumentApiPutRequest(docId, documentPost, apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
+    }
+
+    @Override
+    public Folder createFolder(FolderPost folderPost, String apiKey) throws IOException {
+        String folderResponse = makeFolderApiPostRequest(folderPost, apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(folderResponse, Folder.class);
     }
 
     /* (non-Javadoc)
@@ -448,6 +456,18 @@ public class ApiConnectorImpl implements ApiConnector {
         return response.returnContent();
     }
 
+    private Content makeFolderApiPostRequest(FolderPost folderPost, String apiKey) throws IOException {
+        ObjectMapper mapper = createObjectMapper();
+        String folderAsJson = mapper.writeValueAsString(folderPost);
+        Response response = Request.Post(getApiFoldersUrl())
+                .addHeader("apiKey", apiKey)
+                .bodyString(folderAsJson, ContentType.APPLICATION_JSON)
+                .connectTimeout(CONNECT_TIMEOUT)
+                .socketTimeout(SOCKET_TIMEOUT)
+                .execute();
+        return response.returnContent();
+    }
+
     /* makes the HTTP query and returns the results as a Content object */
     protected Content makeApiGetRequest(String uriString, String responseContentType, String apiKey) throws IOException {
         Response response = Request.Get(uriString)
@@ -477,6 +497,10 @@ public class ApiConnectorImpl implements ApiConnector {
 
     protected String getApiFilesUrl() {
         return serverUrl + API_FILES_ENDPOINT;
+    }
+
+    protected String getApiFoldersUrl() {
+        return serverUrl + API_FOLDERS_ENDPOINT;
     }
 
     protected String getApiFormsUrl() {

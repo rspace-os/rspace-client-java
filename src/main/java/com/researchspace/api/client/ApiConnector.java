@@ -77,6 +77,16 @@ public interface ApiConnector {
      */
     Document updateDocument(Long docId, DocumentPost document, String apiKey) throws IOException;
 
+
+    /**
+     * Creates a folder or notebook (if isNotebook is true)
+     * in the folder related to parentFolderId if specified, else in the users home folder
+     * @param folderPost {@link FolderPost} the new folder to create
+     * @return the new {@link Folder} object
+     * @throws IOException
+     */
+    Folder createFolder(FolderPost folderPost, String apiKey) throws IOException;
+
     /**
      * Search for Gallery files, based on various criteria.
      */
