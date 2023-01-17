@@ -87,6 +87,8 @@ public interface ApiConnector {
      */
     Folder createFolder(FolderPost folderPost, String apiKey) throws IOException;
 
+    Folder getFolder(long folderId, String apiKey) throws IOException;
+
     /**
      * Search for Gallery files, based on various criteria.
      */

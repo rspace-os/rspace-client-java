@@ -38,8 +38,8 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final String API_FOLDERS_ENDPOINT = "/api/v1/folders";
     private static final String API_FORMS_ENDPOINT = "/api/v1/forms";
 
-    private static final int SOCKET_TIMEOUT = 15000;
-    private static final int CONNECT_TIMEOUT = 15000;
+    private static final int SOCKET_TIMEOUT = 45000;
+    private static final int CONNECT_TIMEOUT = 45000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
     private static final String SYSADMIN_API_ENDPOINT = "/api/v1/sysadmin";
     private static final String USER_DETAILS_ENDPOINT = "/api/v1/userDetails";
@@ -52,7 +52,7 @@ public class ApiConnectorImpl implements ApiConnector {
         ConfigPropertiesReader configReader = new ConfigPropertiesReader();
         serverUrl = configReader.getConfigProperty("serverURL");
     }
-    
+
     /**
      * Constructor that allows passing your serverUrl and apiKey 
      */
@@ -88,13 +88,13 @@ public class ApiConnectorImpl implements ApiConnector {
      * @see com.researchspace.api.client.ApiConnector#makeDocumentSearchRequest(com.researchspace.api.client.AdvancedQuery, java.util.Map)
      */
     @Override
-    public DocumentSearchResult searchDocuments(AdvancedQuery advQuery, 
+    public DocumentSearchResult searchDocuments(AdvancedQuery advQuery,
             Map<String, String> searchParams, String apiKey) throws URISyntaxException, IOException {
 
         return makeDocSearchRequest(null, advQuery, searchParams, apiKey);
     }
 
-    private DocumentSearchResult makeDocSearchRequest(String searchQuery, AdvancedQuery advQuery, 
+    private DocumentSearchResult makeDocSearchRequest(String searchQuery, AdvancedQuery advQuery,
             Map<String, String> searchParams, String apiKey) throws URISyntaxException, IOException {
 
         if (searchParams == null) {
@@ -106,7 +106,7 @@ public class ApiConnectorImpl implements ApiConnector {
         if (advQuery != null) {
             searchParams.put("advancedQuery", advQuery.toJSON());
         }
-        
+
         URIBuilder builder = new URIBuilder(getApiDocumentsUrl());
         for (Entry<String, String> param : searchParams.entrySet()) {
             builder.setParameter(param.getKey(), param.getValue());
@@ -114,7 +114,7 @@ public class ApiConnectorImpl implements ApiConnector {
         String uri = builder.build().toString();
         String docSearchResponse = makeApiGetRequest(uri, ContentType.APPLICATION_JSON.toString(), apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
-       
+
         return mapper.readValue(docSearchResponse, DocumentSearchResult.class);
     }
 
@@ -127,14 +127,14 @@ public class ApiConnectorImpl implements ApiConnector {
 
         return mapper.readValue(docSearchResponse, new TypeReference<Map<String, String>>(){});
     }
-    
+
     @Override
     public Document createDocument(DocumentPost documentPost, String apiKey) throws IOException {
         String docAsString = makeDocumentApiPostRequest(documentPost, apiKey).asString();
         ObjectMapper mapper = createObjectMapper();
         return mapper.readValue(docAsString, Document.class);
     }
-    
+
     /* (non-Javadoc)
      * @see com.researchspace.api.client.ApiConnector#makeSingleDocumentRequest(long)
      */
@@ -160,7 +160,7 @@ public class ApiConnectorImpl implements ApiConnector {
     public String retrieveDocumentAsCSV(long docID, String apiKey) throws IOException {
         return makeApiGetRequest(getApiSingleDocumentUrl(docID), "text/csv", apiKey).asString();
     }
-    
+
     /* (non-Javadoc)
      * @see com.researchspace.api.client.ApiConnector#makeLinkedObjectRequest(java.lang.String, java.lang.Class)
      */
@@ -185,11 +185,19 @@ public class ApiConnectorImpl implements ApiConnector {
         return mapper.readValue(folderResponse, Folder.class);
     }
 
+    @Override
+    public Folder getFolder(long folderId, String apiKey) throws IOException {
+        String folderResponse = makeApiGetRequest(getApiFoldersUrl() + "/" + folderId,
+                ContentType.APPLICATION_JSON.toString(), apiKey).asString();
+        ObjectMapper mapper = createObjectMapper();
+        return mapper.readValue(folderResponse, Folder.class);
+    }
+
     /* (non-Javadoc)
 	 * @see com.researchspace.api.client.ApiConnector#makeFileSearchRequest(java.lang.String, java.util.Map)
 	 */
     @Override
-	public FileSearchResult searchFiles(String mediaType, 
+	public FileSearchResult searchFiles(String mediaType,
             Map<String, String> searchParams, String apiKey) throws URISyntaxException, IOException {
 
         if (searchParams == null) {
@@ -198,7 +206,7 @@ public class ApiConnectorImpl implements ApiConnector {
         if (mediaType != null && mediaType.length() > 0) {
             searchParams.put("mediaType", mediaType);
         }
-        
+
         URIBuilder builder = new URIBuilder(getApiFilesUrl());
         for (Entry<String, String> param : searchParams.entrySet()) {
             builder.setParameter(param.getKey(), param.getValue());
@@ -431,6 +439,7 @@ public class ApiConnectorImpl implements ApiConnector {
         Validate.notNull(document);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
+        log.info("Document JSON: {}", documentAsJson);
         Response response = Request.Post(getApiDocumentsUrl())
                 .addHeader("apiKey", apiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
