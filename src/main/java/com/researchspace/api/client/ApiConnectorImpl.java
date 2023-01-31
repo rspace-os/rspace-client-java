@@ -439,7 +439,7 @@ public class ApiConnectorImpl implements ApiConnector {
         Validate.notNull(document);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
-        log.info("Document JSON: {}", documentAsJson);
+//        log.info("Document JSON: {}", documentAsJson);
         Response response = Request.Post(getApiDocumentsUrl())
                 .addHeader("apiKey", apiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
