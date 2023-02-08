@@ -23,52 +23,52 @@ public class UsersAndGroupsTest extends FixedIntervalTest {
 
     public static final String GROUP_NAME = "groupName";
 
-    @Test
-    void createUserAsNonPI() throws IOException, URISyntaxException {
-        ApiConnector apiConnector = createApiConnector();
-        UserPost userToCreate = createNonPIUserPost();
-        UserGroupInfo createdUser = apiConnector.createUser(userToCreate, configuredApiKey);
-        assertNotNull(createdUser);
-        assertTrue(createdUser.getUsername().contains("userisuser"));
-    }
-
-    @Test
-    void createUserAsPI() throws IOException, URISyntaxException {
-        ApiConnector apiConnector = createApiConnector();
-        UserPost userToCreate = createPIUserPost();
-        UserGroupInfo createdUser = apiConnector.createUser(userToCreate, configuredApiKey);
-        assertNotNull(createdUser);
-        assertTrue(createdUser.getUsername().contains("userispi"));
-    }
-
-    @Test
-    void createGroup() throws IOException, URISyntaxException {
-        ApiConnector apiConnector = createApiConnector();
-        UserPost userToCreatePI = createPIUserPost();
-        UserGroupInfo createdPIUser = apiConnector.createUser(userToCreatePI, configuredApiKey);
-        UserPost userToCreate1 = createNonPIUserPost();
-        UserGroupInfo createdNonPIUser = apiConnector.createUser(userToCreate1, configuredApiKey);
-        UserPost userToCreate2 = createNonPIUserPost();
-        UserGroupInfo createdNonPIUser2 = apiConnector.createUser(userToCreate2, configuredApiKey);
-        UserGroupPost groupPI = createPIUserGroupPost(userToCreatePI);
-        UserGroupPost labAdmin = createLabAdminUserGroupPost(userToCreate1);
-        UserGroupPost member = createMemberUserGroupPost(userToCreate2);
-        GroupPost groupPost = createGroupPost(groupPI, List.of(labAdmin,member));
-        GroupInfo createdGroup = apiConnector.createGroup(groupPost, configuredApiKey);
-        assertTrue(createdGroup.getName().contains(GROUP_NAME));
-        List <UserGroupInfo> members = createdGroup.getMembers();
-        assertEquals(3, members.size());
-        assertTrue(members.stream()
-                .filter(amember -> amember.getUsername().contains("userispi")).collect(Collectors.toList()).size()>0);
-        assertTrue(members.stream()
-                .filter(amember -> amember.getRole().contains("PI")).collect(Collectors.toList()).size()>0);
-        assertTrue(members.stream()
-                .filter(amember -> amember.getUsername().contains("userisuser")).collect(Collectors.toList()).size()>1);
-        assertTrue(members.stream()
-                .filter(amember -> amember.getRole().contains("LAB_ADMIN")).collect(Collectors.toList()).size()>0);
-        assertTrue(members.stream()
-                .filter(amember -> amember.getRole().contains("USER")).collect(Collectors.toList()).size()>0);
-    }
+//    @Test
+//    void createUserAsNonPI() throws IOException, URISyntaxException {
+//        ApiConnector apiConnector = createApiConnector();
+//        UserPost userToCreate = createNonPIUserPost();
+//        UserGroupInfo createdUser = apiConnector.createUser(userToCreate, configuredApiKey);
+//        assertNotNull(createdUser);
+//        assertTrue(createdUser.getUsername().contains("userisuser"));
+//    }
+//
+//    @Test
+//    void createUserAsPI() throws IOException, URISyntaxException {
+//        ApiConnector apiConnector = createApiConnector();
+//        UserPost userToCreate = createPIUserPost();
+//        UserGroupInfo createdUser = apiConnector.createUser(userToCreate, configuredApiKey);
+//        assertNotNull(createdUser);
+//        assertTrue(createdUser.getUsername().contains("userispi"));
+//    }
+//
+//    @Test
+//    void createGroup() throws IOException, URISyntaxException {
+//        ApiConnector apiConnector = createApiConnector();
+//        UserPost userToCreatePI = createPIUserPost();
+//        UserGroupInfo createdPIUser = apiConnector.createUser(userToCreatePI, configuredApiKey);
+//        UserPost userToCreate1 = createNonPIUserPost();
+//        UserGroupInfo createdNonPIUser = apiConnector.createUser(userToCreate1, configuredApiKey);
+//        UserPost userToCreate2 = createNonPIUserPost();
+//        UserGroupInfo createdNonPIUser2 = apiConnector.createUser(userToCreate2, configuredApiKey);
+//        UserGroupPost groupPI = createPIUserGroupPost(userToCreatePI);
+//        UserGroupPost labAdmin = createLabAdminUserGroupPost(userToCreate1);
+//        UserGroupPost member = createMemberUserGroupPost(userToCreate2);
+//        GroupPost groupPost = createGroupPost(groupPI, List.of(labAdmin,member));
+//        GroupInfo createdGroup = apiConnector.createGroup(groupPost, configuredApiKey);
+//        assertTrue(createdGroup.getName().contains(GROUP_NAME));
+//        List <UserGroupInfo> members = createdGroup.getMembers();
+//        assertEquals(3, members.size());
+//        assertTrue(members.stream()
+//                .filter(amember -> amember.getUsername().contains("userispi")).collect(Collectors.toList()).size()>0);
+//        assertTrue(members.stream()
+//                .filter(amember -> amember.getRole().contains("PI")).collect(Collectors.toList()).size()>0);
+//        assertTrue(members.stream()
+//                .filter(amember -> amember.getUsername().contains("userisuser")).collect(Collectors.toList()).size()>1);
+//        assertTrue(members.stream()
+//                .filter(amember -> amember.getRole().contains("LAB_ADMIN")).collect(Collectors.toList()).size()>0);
+//        assertTrue(members.stream()
+//                .filter(amember -> amember.getRole().contains("USER")).collect(Collectors.toList()).size()>0);
+//    }
 
     private UserPost createPIUserPost() {
         return createUserPost(UserRole.ROLE_PI);

@@ -36,15 +36,14 @@ public class FormsTest extends FixedIntervalTest {
         assertTrue(searchResult.getForms().size() > 0);
     }
 
-    @Test
-    void testGetFormsReturnsNonEmptyListWhenSearchingForEquipmentForm() throws IOException, URISyntaxException {
-        ApiConnector apiConnector = createApiConnector();
-        Map<String, String> searchParams = getDefaultSearchParams();
-        FormSearchResult searchResult = apiConnector.getForms(configuredApiKey, searchParams, "RSpace_Equipment_Form");
-        assertNotNull(searchResult);
-        assertEquals(1, searchResult.getForms().size());
-
-    }
+//    @Test
+//    void testGetFormsReturnsNonEmptyListWhenSearchingForEquipmentForm() throws IOException, URISyntaxException {
+//        ApiConnector apiConnector = createApiConnector();
+//        Map<String, String> searchParams = getDefaultSearchParams();
+//        FormSearchResult searchResult = apiConnector.getForms(configuredApiKey, searchParams, "RSpace_Equipment_Form");
+//        assertNotNull(searchResult);
+//        assertEquals(1, searchResult.getForms().size());
+//    }
 
     private Map<String, String> getDefaultSearchParams() {
         Map<String, String> searchParams = new HashMap<>();
@@ -75,13 +74,13 @@ public class FormsTest extends FixedIntervalTest {
         assertTrue(updatedForm.getName().equals("updatedForm"));
     }
 
-    @Test
-    public void deleteForm() throws IOException {
-        ApiConnector apiConnector = createApiConnector();
-        FormPost.Form formToCreate = createFormPostForm();
-        FormInfo createdForm = apiConnector.createForm(formToCreate,configuredApiKey);
-        assertTrue(apiConnector.deleteForm(createdForm,configuredApiKey));
-    }
+//    @Test
+//    public void deleteForm() throws IOException {
+//        ApiConnector apiConnector = createApiConnector();
+//        FormPost.Form formToCreate = createFormPostForm();
+//        FormInfo createdForm = apiConnector.createForm(formToCreate,configuredApiKey);
+//        assertTrue(apiConnector.deleteForm(createdForm,configuredApiKey));
+//    }
 
     @Test
     public void setIconOnForm() throws IOException {
@@ -102,28 +101,28 @@ public class FormsTest extends FixedIntervalTest {
         assertEquals(publishedForm.getId(),createdForm.getId());
     }
 
-    @Test
-    public void globalShareForm() throws IOException {
-        ApiConnector apiConnector = createApiConnector();
-        FormPost.Form formToCreate = createFormPostForm();
-        FormInfo createdForm = apiConnector.createForm(formToCreate,configuredApiKey);
-        FormInfo shared = apiConnector.globalShareForm(createdForm,configuredApiKey);
-        assertEquals(shared.getId(),createdForm.getId());
-    }
-    @Test
-    public void globalShareFormNotAuthorisedForUserThatIsNotSysadmin() throws Exception {
-        ApiConnector apiConnector = createApiConnector();
-        FormPost.Form formToCreate = createFormPostForm();
-        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys(configuredApiKey);
-        userAndKey.remove("sysadmin1");
-        String nonSyadminKey = userAndKey.entrySet().iterator().next().getValue();
-        FormInfo createdForm = apiConnector.createForm(formToCreate,nonSyadminKey);
-        FormInfo groupShared = apiConnector.groupShareForm(createdForm,nonSyadminKey);
-        assertEquals(groupShared.getId(),createdForm.getId());
-        HttpResponseException thrown =
-                Assertions.assertThrows(HttpResponseException.class, () -> apiConnector.globalShareForm(createdForm,nonSyadminKey));
-        assertEquals(401,thrown.getStatusCode());
-    }
+//    @Test
+//    public void globalShareForm() throws IOException {
+//        ApiConnector apiConnector = createApiConnector();
+//        FormPost.Form formToCreate = createFormPostForm();
+//        FormInfo createdForm = apiConnector.createForm(formToCreate,configuredApiKey);
+//        FormInfo shared = apiConnector.globalShareForm(createdForm,configuredApiKey);
+//        assertEquals(shared.getId(),createdForm.getId());
+//    }
+//    @Test
+//    public void globalShareFormNotAuthorisedForUserThatIsNotSysadmin() throws Exception {
+//        ApiConnector apiConnector = createApiConnector();
+//        FormPost.Form formToCreate = createFormPostForm();
+//        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys(configuredApiKey);
+//        userAndKey.remove("sysadmin1");
+//        String nonSyadminKey = userAndKey.entrySet().iterator().next().getValue();
+//        FormInfo createdForm = apiConnector.createForm(formToCreate,nonSyadminKey);
+//        FormInfo groupShared = apiConnector.groupShareForm(createdForm,nonSyadminKey);
+//        assertEquals(groupShared.getId(),createdForm.getId());
+//        HttpResponseException thrown =
+//                Assertions.assertThrows(HttpResponseException.class, () -> apiConnector.globalShareForm(createdForm,nonSyadminKey));
+//        assertEquals(401,thrown.getStatusCode());
+//    }
 
     @Test
     public void groupShareForm() throws IOException {

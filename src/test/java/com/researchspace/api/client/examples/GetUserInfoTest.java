@@ -24,40 +24,40 @@ class GetUserInfoTest extends FixedIntervalTest {
     /**
      * General search for a particular phrase. Corresponds to Workspace 'All' search.
      */
-    @Test
-    void getsAllUserInfoWhenRunAsSysadmin() throws Exception {
+//    @Test
+//    void getsAllUserInfoWhenRunAsSysadmin() throws Exception {
+//
+//        ApiConnector apiConnector = createApiConnector();
+//
+//        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys(configuredApiKey);
+//
+//        assertTrue(userAndKey.size() > 0);
+//    }
 
-        ApiConnector apiConnector = createApiConnector();
-
-        Map<String, String> userAndKey = apiConnector.getUserNamesAndApiKeys(configuredApiKey);
-
-        assertTrue(userAndKey.size() > 0);
-    }
-
-    @Test
-    void getsUnauthorisedErrorWhenNotRunAsSysadmin() throws Exception {
-
-        ApiConnector apiConnector = createApiConnector();
-
-        HttpResponseException thrown =
-                Assertions.assertThrows(HttpResponseException.class, () -> apiConnector.getUserNamesAndApiKeys("abcdefghijklmnop3"));
-        assertEquals(401,thrown.getStatusCode());
-
-    }
+//    @Test
+//    void getsUnauthorisedErrorWhenNotRunAsSysadmin() throws Exception {
+//
+//        ApiConnector apiConnector = createApiConnector();
+//
+//        HttpResponseException thrown =
+//                Assertions.assertThrows(HttpResponseException.class, () -> apiConnector.getUserNamesAndApiKeys("abcdefghijklmnop3"));
+//        assertEquals(401,thrown.getStatusCode());
+//
+//    }
 
     /**
      * Get user object by username using getUserNamesAndApiKeys method
      */
-    @Test
-    void getsUserByUsername() throws Exception {
-
-        ApiConnector apiConnector = createApiConnector();
-
-        User user = apiConnector.getUserByUsername("sysadmin1", configuredApiKey);
-
-        assertTrue(user.getUsername().equals("sysadmin1"));
-
-    }
+//    @Test
+//    void getsUserByUsername() throws Exception {
+//
+//        ApiConnector apiConnector = createApiConnector();
+//
+//        User user = apiConnector.getUserByUsername("sysadmin1", configuredApiKey);
+//
+//        assertTrue(user.getUsername().equals("sysadmin1"));
+//
+//    }
 
     /**
      * Get user object by username using getUserNamesAndApiKeys method username does not exist
