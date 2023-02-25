@@ -38,7 +38,7 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final String API_FOLDERS_ENDPOINT = "/api/v1/folders";
     private static final String API_FORMS_ENDPOINT = "/api/v1/forms";
 
-    private static final int SOCKET_TIMEOUT = 150000;
+    private static final int SOCKET_TIMEOUT = 550000;
     private static final int CONNECT_TIMEOUT = 45000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
     private static final String SYSADMIN_API_ENDPOINT = "/api/v1/sysadmin";
@@ -455,7 +455,7 @@ public class ApiConnectorImpl implements ApiConnector {
         log.info("updating document url: {}", docUpdateUrl);
         ObjectMapper mapper = createObjectMapper();
         String documentAsJson = mapper.writeValueAsString(document);
-        log.info("updating document with json: {}", documentAsJson);
+        log.debug("updating document with json: {}", documentAsJson);
         Response response = Request.Put(docUpdateUrl)
                 .addHeader("apiKey", apiKey)
                 .bodyString(documentAsJson, ContentType.APPLICATION_JSON)
