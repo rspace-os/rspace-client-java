@@ -38,7 +38,7 @@ public class ApiConnectorImpl implements ApiConnector {
     private static final String API_FOLDERS_ENDPOINT = "/api/v1/folders";
     private static final String API_FORMS_ENDPOINT = "/api/v1/forms";
 
-    private static final int SOCKET_TIMEOUT = 550000;
+    private static final int SOCKET_TIMEOUT = 6500000;
     private static final int CONNECT_TIMEOUT = 45000;
     private static final String USER_NAME_AND_KEY_ENDPOINT = "/api/v1/syadmin/userDetails/apiKeyInfo/all";
     private static final String SYSADMIN_API_ENDPOINT = "/api/v1/sysadmin";
@@ -61,11 +61,20 @@ public class ApiConnectorImpl implements ApiConnector {
     }
 
     @Override
-    public User getUserByUsername(String username, String apiKey) throws Exception {
-        Map<String, String> usersAndAPIKeys = getUserNamesAndApiKeys(apiKey);
+    public User getUserByUsername(String username, String sysadminApiKey) throws Exception {
+        Map<String, String> usersAndAPIKeys = getUserNamesAndApiKeys(sysadminApiKey);
         URIBuilder builder = new URIBuilder(getUserDetailsEndpoint() + "/whoami");
         String uri = builder.build().toString();
         String userWhoAmIResponse = makeApiGetRequest(uri,ContentType.APPLICATION_JSON.toString() , usersAndAPIKeys.get(username)).asString();
+        ObjectMapper mapper = createObjectMapper();
+
+        return mapper.readValue(userWhoAmIResponse, User.class);
+    }
+    @Override
+    public User getUserByUsernameAndApiKey(String username, String usersApiKey) throws Exception {
+        URIBuilder builder = new URIBuilder(getUserDetailsEndpoint() + "/whoami");
+        String uri = builder.build().toString();
+        String userWhoAmIResponse = makeApiGetRequest(uri,ContentType.APPLICATION_JSON.toString() ,usersApiKey ).asString();
         ObjectMapper mapper = createObjectMapper();
 
         return mapper.readValue(userWhoAmIResponse, User.class);

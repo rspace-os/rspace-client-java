@@ -10,6 +10,9 @@ import com.researchspace.api.clientmodel.*;
 
 public interface ApiConnector {
     User getUserByUsername(String username, String apiKey) throws Exception;
+
+    User getUserByUsernameAndApiKey(String username, String apiKey) throws Exception;
+
     Map<String,String> getUserNamesAndApiKeys(String apiKey) throws Exception;
 
     /**
