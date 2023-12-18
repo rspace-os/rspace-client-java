@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <artifactId>rspace-client-java</artifactId>
-    <version>1.95.0-SNAPSHOT</version>
+    <version>1.95.0</version>
     <parent>
         <groupId>com.github.rspace-os</groupId>
         <artifactId>rspace-os-parent</artifactId>
@@ -20,13 +20,14 @@
     </repositories>
 
     <build>
+        <!-- maven compiler/surefire plugins defined in parent pom file -->
     </build>
 
     <dependencies>
         <dependency>
             <groupId>com.github.rspace-os</groupId>
             <artifactId>rspace-client-java-model</artifactId>
-            <version>7156a49cab</version>
+            <version>1.95.0</version>
         </dependency>
        
         <dependency>
