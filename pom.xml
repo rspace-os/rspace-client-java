@@ -3,114 +3,79 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.researchspace</groupId>
+    
     <artifactId>rspace-client-java</artifactId>
-    <version>1.85.0-SNAPSHOT</version>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.11</java.version>
-        <junit.jupiter.version>5.9.0</junit.jupiter.version>
-        <jackson.version>2.14.0-rc3</jackson.version>
-        <slf4j.version>1.7.21</slf4j.version>
-        <log4j.version>2.0.3</log4j.version>
-        <apache.httphttpcomponents.version>4.5.14</apache.httphttpcomponents.version>
-    </properties>
+    <version>1.95.0</version>
+    <parent>
+        <groupId>com.github.rspace-os</groupId>
+        <artifactId>rspace-os-parent</artifactId>
+        <version>0.1.1</version>
+    </parent>
+    
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
-        </plugins>
-
+        <!-- maven compiler/surefire plugins defined in parent pom file -->
     </build>
-
 
     <dependencies>
         <dependency>
-            <groupId>com.researchspace</groupId>
+            <groupId>com.github.rspace-os</groupId>
             <artifactId>rspace-client-java-model</artifactId>
-            <version>1.85.0-SNAPSHOT</version>
+            <version>1.95.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+       
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${apache.httphttpcomponents.version}</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>${apache.httphttpcomponents.version}</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>fluent-hc</artifactId>
-            <version>${apache.httphttpcomponents.version}</version>
+            <version>${apache.httpcomponents.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.15</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
-
-        <!--        Test Scoped Dependencies-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -125,5 +90,8 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <apache.httpcomponents.version>4.5.14</apache.httpcomponents.version>
+    </properties>
 
 </project>
