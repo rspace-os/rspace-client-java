@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.rspace-os</groupId>
             <artifactId>rspace-client-java-model</artifactId>
-            <version>5b79e00f72</version>
+            <version>1.99.0</version>
         </dependency>
        
         <dependency>
