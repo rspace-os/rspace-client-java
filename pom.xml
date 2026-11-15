@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.github.rspace-os</groupId>
         <artifactId>rspace-parent</artifactId>
-        <version>2.1.4</version>
+        <version>314e7a9f6f729d219c4157c73dffd8314233de82</version>
     </parent>
     
     <repositories>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.github.rspace-os</groupId>
             <artifactId>rspace-client-java-model</artifactId>
-            <version>1.99.0</version>
+            <version>1.100.0</version>
         </dependency>
        
         <dependency>
